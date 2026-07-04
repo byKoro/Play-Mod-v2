@@ -18,8 +18,10 @@ export function saveTimeline(player, timeline) {
   Tools.setDynamicProperty(player, "timeline", timeline);
 }
 
-export function resetTimeline(player) {
-  saveTimeline(player, createTimeline(player));
+export function resetTimeline(player, value) {
+  if (value) {
+    saveTimeline(player, createTimeline(player));
+  }
 }
 
 export function registerTimelineEvents() {
@@ -32,10 +34,10 @@ export function registerTimelineEvents() {
   });
 }
 
-export function setDelayTimeline(player, newDelay) {
+export function setMaxTimeline(player, newDelay) {
   const timeline = getTimeline(player);
 
-  timeline.defaulMaxTime = newDelay;
+  timeline.defaultMaxTime = newDelay;
   saveTimeline(player, timeline);
 }
 
@@ -60,4 +62,8 @@ export function validateTimelineDimension(player, timeline) {
   }
 
   return true;
+}
+
+export function exportTimeline(player) {
+  const timeline = getTimeline(player);
 }
