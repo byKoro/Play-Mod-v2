@@ -5,6 +5,7 @@ import { main_UI } from "./mainUi";
 import { editKeyframe_UI } from "./editKeyframesUi";
 import { getTimeline } from "../services/timelineService";
 import { editAllKeyframes } from "./editAllKeyframesUI";
+import { saveTimelineUi } from "./saveTimelineUi";
 
 export function listKeyframe_UI(player) {
   system.run(async () => {
@@ -13,7 +14,7 @@ export function listKeyframe_UI(player) {
     const buttons = [
       {
         text: "Salvar Timeline",
-        action: () => console.warn("fix"),
+        action: () => saveTimelineUi(player),
       },
       {
         text: "Alterar Todos",

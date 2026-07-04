@@ -3,6 +3,7 @@ import { Tools } from "../utils/index";
 import {
   createTimeline,
   getTimeline,
+  limitTimelineKeyframes,
   saveTimeline,
   validateTimelineDimension,
 } from "./timelineService";
@@ -165,6 +166,7 @@ export function delLastKeyframe(player) {
 export function setKeyframe(player) {
   const timeline = getTimeline(player);
 
+  if (limitTimelineKeyframes(player)) return;
   if (!validateTimelineDimension(player, timeline)) return;
 
   const keyframe = createKeyframe(player);
@@ -174,14 +176,15 @@ export function setKeyframe(player) {
       Tools.getDynamicProperty(player, "editKeyframe"),
     );
 
-    const timeline = Tools.getDynamicProperty(player, "timeline");
+    if (!timeline.keyframes[keyframeIndex]) return;
+
     timeline.keyframes[keyframeIndex] = keyframe;
 
     saveTimeline(player, timeline);
 
     player.removeTag("editKeyframe");
     return editKeyframe_UI(player, keyframeIndex);
-  } else {
-    addKeyframe(player, keyframe);
   }
+
+  addKeyframe(player, keyframe);
 }

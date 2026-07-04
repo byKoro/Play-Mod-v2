@@ -1,8 +1,10 @@
 import { world } from "@minecraft/server";
 import { Tools } from "../utils/tools";
+import { saveTimelineUi } from "../ui/saveTimelineUi";
 
 export function createTimeline(player) {
   return {
+    name: "",
     playerId: player.id,
     defaultTransition: 0,
     defaulMaxTime: 30,
@@ -64,6 +66,19 @@ export function validateTimelineDimension(player, timeline) {
   return true;
 }
 
-export function exportTimeline(player) {
+export function exportTimeline(player, value) {
   const timeline = getTimeline(player);
+
+  if (value === undefined || value.trim() == "") {
+    player.dimension.playSound("note.bass", player.location);
+    return saveTimelineUi(player);
+  }
+}
+
+export function limitTimelineKeyframes(player) {
+  const timeline = getTimeline(player);
+  if (timeline.keyframes.length > 20) {
+    world.sendMessage("§c Limite de keyframes atingido!");
+    return true;
+  }
 }
