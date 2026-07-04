@@ -23,7 +23,7 @@ export function listKeyframe_UI(player) {
 
     timeline.keyframes.forEach((keyframe, index) => {
       buttons.push({
-        text: keyframe.name ?? `Keyframe ${index}`,
+        text: keyframe.name === "" ? `Keyframe ${index}` : keyframe.name,
         action: () => editKeyframe_UI(player, index),
       });
     });

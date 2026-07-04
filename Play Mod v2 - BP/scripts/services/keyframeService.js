@@ -1,10 +1,11 @@
 import { editKeyframe_UI } from "../ui/editKeyframesUi";
+import { listKeyframe_UI } from "../ui/listKeyframeUi";
 import { Tools } from "../utils/index";
 import { createTimeline, getTimeline, saveTimeline } from "./timelineService";
 
 export function createKeyframe(player) {
   return {
-    name: undefined,
+    name: "",
     position: getHeadPosition(player),
     rotation: getPlayerRotation(player),
     dimension: getDimension(player),
@@ -45,12 +46,15 @@ function getPlayerName(player) {
 }
 
 function getDimension(player) {
-  return player.dimension;
+  return player.dimension.id;
 }
 
-export function redoKeyframe(player, keyframeIndex) {
-  Tools.setDynamicProperty(player, "editKeyframe", keyframeIndex);
-  player.addTag("editKeyframe");
+export function redoKeyframe(player, keyframeIndex, value) {
+  if (value) {
+    Tools.setDynamicProperty(player, "editKeyframe", keyframeIndex);
+    player.addTag("editKeyframe");
+    return true;
+  }
 }
 
 export function validateEditKeyframeForm(player, keyframeIndex, response) {
@@ -66,23 +70,84 @@ export function renameKeyframe(player, keyframeIndex, currentName, newName) {
   const timeline = getTimeline(player);
 
   if (newName === currentName || newName === "") {
-    newName = undefined;
+    newName = "";
   }
   timeline.keyframes[keyframeIndex].name = newName;
   saveTimeline(player, timeline);
 }
 
-export function delKeyframe(player, keyframeIndex) {
-  const timeline = getTimeline(player);
-  console.warn(keyframeIndex);
-  console.warn(timeline.keyframes.length);
+export function delKeyframe(player, keyframeIndex, value) {
+  if (value) {
+    const timeline = getTimeline(player);
 
-  timeline.keyframes.splice(keyframeIndex, 1);
-  saveTimeline(player, timeline);
+    timeline.keyframes.splice(keyframeIndex, 1);
+    saveTimeline(player, timeline);
+
+    return true;
+  }
 }
 
 export function getKeyframe(player, keyframeIndex) {
   const timeline = getTimeline(player);
 
+  if (!timeline) {
+    throw new Error("Timeline não encontrada");
+  }
+
+  if (!timeline.keyframes) {
+    throw new Error("Timeline sem keyframes");
+  }
+
+  if (!timeline.keyframes[keyframeIndex]) {
+    throw new Error(`Keyframe ${keyframeIndex} não existe`);
+  }
+
   return timeline.keyframes[keyframeIndex];
+}
+
+export function getKeyframePos(player, keyframeIndex) {
+  return getKeyframe(player, keyframeIndex).position;
+}
+
+export function getKeyframeRot(player, keyframeIndex) {
+  return getKeyframe(player, keyframeIndex).rotation;
+}
+
+export function setKeyframePosition(player, index, text) {
+  const timeline = getTimeline(player);
+  const keyframe = timeline.keyframes[index];
+
+  if (!keyframe) return false;
+
+  const pos = Tools.parseVector3(text);
+
+  // garante base segura
+  keyframe.position = {
+    x: keyframe.position?.x ?? 0,
+    y: keyframe.position?.y ?? 0,
+    z: keyframe.position?.z ?? 0,
+    ...pos,
+  };
+
+  saveTimeline(player, timeline);
+  return true;
+}
+
+export function setKeyframeRotation(player, index, text) {
+  const timeline = getTimeline(player);
+  const keyframe = timeline.keyframes[index];
+
+  if (!keyframe) return false;
+
+  const rot = Tools.parseVector3(text);
+
+  // base segura
+  keyframe.rotation = {
+    pitch: keyframe.rotation?.pitch ?? 0,
+    yaw: keyframe.rotation?.yaw ?? 0,
+    ...rot,
+  };
+
+  saveTimeline(player, timeline);
+  return true;
 }

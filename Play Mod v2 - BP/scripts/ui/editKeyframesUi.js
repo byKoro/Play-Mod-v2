@@ -8,44 +8,108 @@ import {
   renameKeyframe,
   validateEditKeyframeForm,
   getKeyframe,
+  getKeyframePos,
+  getKeyframeRot,
+  setKeyframePosition,
+  setKeyframeRotation,
 } from "../services/index.js";
+import { getTimeline } from "../services/index.js";
 
 const Transicoes = ["Teste", "Teste2"];
 
 export function editKeyframe_UI(player, keyframeIndex) {
   system.run(() => {
     const keyframe = getKeyframe(player, keyframeIndex);
-
     const keyframeName = keyframe.name ?? String(keyframeIndex);
+    const keyframePos = getKeyframePos(player, keyframeIndex);
+    const keyframeRot = getKeyframeRot(player, keyframeIndex);
+    const posText = Object.entries(keyframePos)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join("  ");
 
-    const form = new ModalFormData()
-      .title("")
-      .textField("Nomeie o keyframe", keyframeName, {
-        defaultValue: `${keyframeName}`,
-      })
-      .dropdown("Transições", Transicoes)
-      .toggle("Regravar? Marque e salve.")
-      .toggle("Deletar? Marque e salve.")
-      .submitButton("Salvar");
+    const rotText = Object.entries(keyframeRot)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join("  ");
 
+    /// Definir modal
+    const campos = [
+      {
+        type: "textField",
+        label: "Nomeie o keyframe",
+        placeholder: keyframeName,
+        options: {
+          defaultValue: keyframeName,
+        },
+      },
+      {
+        type: "dropdown",
+        label: "Transições",
+        options: Transicoes,
+      },
+      {
+        type: "toggle",
+        label: "Regravar? Marque e salve.",
+      },
+      {
+        type: "toggle",
+        label: "Deletar? Marque e salve.",
+      },
+      {
+        type: "textField",
+        label: "Ajuste fino posição",
+        placeholder: keyframeName,
+        options: {
+          defaultValue: posText,
+        },
+      },
+      {
+        type: "textField",
+        label: "Ajuste fino rotação",
+        placeholder: keyframeName,
+        options: {
+          defaultValue: rotText,
+        },
+      },
+    ];
+
+    // Constroi modal
+    const form = new ModalFormData().title("");
+    campos.forEach((campo) => {
+      switch (campo.type) {
+        case "textField":
+          form.textField(campo.label, campo.placeholder, campo.options);
+          break;
+
+        case "dropdown":
+          form.dropdown(campo.label, campo.options);
+          break;
+
+        case "toggle":
+          form.toggle(campo.label);
+          break;
+      }
+    });
+
+    form.submitButton("Salvar");
+
+    // Ações do modal
     form.show(player).then((response) => {
-      const respostas = response.formValues;
+      const value = response.formValues;
       if (response.canceled) return listKeyframe_UI(player);
 
-      validateEditKeyframeForm(player, keyframeIndex, respostas);
+      validateEditKeyframeForm(player, keyframeIndex, value);
 
-      renameKeyframe(player, keyframeIndex, keyframeName, respostas[0]);
+      renameKeyframe(player, keyframeIndex, keyframeName, value[0]);
 
-      if (respostas[2]) {
-        return redoKeyframe(player, keyframeIndex);
-      }
+      if (redoKeyframe(player, keyframeIndex, value[2])) return;
 
-      if (respostas[3]) {
-        delKeyframe(player, keyframeIndex);
+      if (delKeyframe(player, keyframeIndex, value[3])) {
         return listKeyframe_UI(player);
       }
+      setKeyframePosition(player, keyframeIndex, value[4]);
+      setKeyframeRotation(player, keyframeIndex, value[5]);
 
-      renameKeyframe(player, keyframeIndex, keyframeName, respostas[0]);
+      console.warn(JSON.stringify(getKeyframe(player, keyframeIndex)));
       return editKeyframe_UI(player, keyframeIndex);
     });
   });

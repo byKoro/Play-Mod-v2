@@ -43,3 +43,21 @@ export function getMaxTime(player) {
   const timeline = getTimeline(player);
   return timeline.defaultMaxTime;
 }
+
+export function validateTimelineDimension(player, timeline) {
+  const playerDim = player.dimension.id;
+
+  for (let i = 0; i < timeline.keyframes.length; i++) {
+    const keyframe = timeline.keyframes[i];
+
+    if (!keyframe) continue;
+
+    if (keyframe.dimension !== playerDim) {
+      player.sendMessage(`§cErro: Keyframe ${i} está em outra dimensão!`);
+
+      return false;
+    }
+  }
+
+  return true;
+}

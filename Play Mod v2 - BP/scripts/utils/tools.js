@@ -20,4 +20,26 @@ export class Tools {
 
     return Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
+
+  static isValidNumber(value) {
+    return /^-?\d+(\.\d+)?$/.test(value);
+  }
+
+  static parseVector3(text) {
+    const vector = {};
+
+    const regex = /([a-z]+)\s*:\s*(-?\d+(?:\.\d+)?)/gi;
+
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      const key = match[1].toLowerCase();
+      const value = match[2];
+
+      if (this.isValidNumber(value)) {
+        vector[key] = Number(value);
+      }
+    }
+
+    return vector;
+  }
 }

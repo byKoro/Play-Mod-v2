@@ -36,6 +36,9 @@ export function main_UI(player) {
 }
 
 function setKeyframe(player) {
+  const timeline = Tools.getDynamicProperty(player, "timeline");
+  const dimensionPlayer = player.dimension;
+
   const keyframe = createKeyframe(player);
 
   if (player.getTags().includes("editKeyframe")) {
