@@ -1,7 +1,12 @@
-import { editKeyframe_UI } from "../ui/editKeyframesUi";
 import { listKeyframe_UI } from "../ui/listKeyframeUi";
 import { Tools } from "../utils/index";
-import { createTimeline, getTimeline, saveTimeline } from "./timelineService";
+import {
+  createTimeline,
+  getTimeline,
+  saveTimeline,
+  validateTimelineDimension,
+} from "./timelineService";
+import { editKeyframe_UI } from "../ui/index";
 
 export function createKeyframe(player) {
   return {
@@ -61,7 +66,6 @@ export function validateEditKeyframeForm(player, keyframeIndex, response) {
   const quantidade = response.filter((valor) => valor === true).length;
 
   if (quantidade > 1) {
-    console.warn("Favor marcar apenas uma opção.");
     return editKeyframe_UI(player, keyframeIndex);
   }
 }
@@ -150,4 +154,34 @@ export function setKeyframeRotation(player, index, text) {
 
   saveTimeline(player, timeline);
   return true;
+}
+
+export function delLastKeyframe(player) {
+  const timeline = getTimeline(player);
+  timeline.keyframes.pop();
+  saveTimeline(player, timeline);
+}
+
+export function setKeyframe(player) {
+  const timeline = getTimeline(player);
+
+  if (!validateTimelineDimension(player, timeline)) return;
+
+  const keyframe = createKeyframe(player);
+
+  if (player.getTags().includes("editKeyframe")) {
+    const keyframeIndex = Number(
+      Tools.getDynamicProperty(player, "editKeyframe"),
+    );
+
+    const timeline = Tools.getDynamicProperty(player, "timeline");
+    timeline.keyframes[keyframeIndex] = keyframe;
+
+    saveTimeline(player, timeline);
+
+    player.removeTag("editKeyframe");
+    return editKeyframe_UI(player, keyframeIndex);
+  } else {
+    addKeyframe(player, keyframe);
+  }
 }

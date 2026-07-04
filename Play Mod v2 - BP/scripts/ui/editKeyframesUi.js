@@ -109,7 +109,6 @@ export function editKeyframe_UI(player, keyframeIndex) {
       setKeyframePosition(player, keyframeIndex, value[4]);
       setKeyframeRotation(player, keyframeIndex, value[5]);
 
-      console.warn(JSON.stringify(getKeyframe(player, keyframeIndex)));
       return editKeyframe_UI(player, keyframeIndex);
     });
   });

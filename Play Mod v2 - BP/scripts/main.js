@@ -5,7 +5,6 @@ import { getTimeline } from "./services/timelineService";
 
 world.afterEvents.itemUse.subscribe((ev) => {
   const player = ev.source;
-  //console.warn(JSON.stringify(getTimeline(player)));
   main_UI(player);
 });
 
