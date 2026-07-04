@@ -21,32 +21,31 @@ export function createKeyframe(player) {
 export function addKeyframe(player, keyframe) {
   let timeline = getTimeline(player);
 
-  if (timeline === undefined) {
+  if (!timeline) {
     timeline = createTimeline(player);
   }
 
   timeline.keyframes.push(keyframe);
-
   saveTimeline(player, timeline);
 }
 
 function getHeadPosition(player) {
   const head = player.getHeadLocation();
-
-  for (const key in head) {
-    head[key] = Number(head[key].toFixed(2));
-  }
-  return head;
+  return {
+    x: Number(head.x.toFixed(2)),
+    y: Number(head.y.toFixed(2)),
+    z: Number(head.z.toFixed(2)),
+  };
 }
 
 function getPlayerRotation(player) {
   const { x, y } = player.getRotation();
-
   return {
-    pitch: Number(x).toFixed(2),
-    yaw: Number(y).toFixed(2),
+    pitch: Number(x.toFixed(2)), // Corrigido: Agora salva como Number
+    yaw: Number(y.toFixed(2)), // Corrigido: Agora salva como Number
   };
 }
+
 function getPlayerName(player) {
   return player.name;
 }
@@ -61,6 +60,7 @@ export function redoKeyframe(player, keyframeIndex, value) {
     player.addTag("editKeyframe");
     return true;
   }
+  return false;
 }
 
 export function validateEditKeyframeForm(player, keyframeIndex, response) {
@@ -73,8 +73,9 @@ export function validateEditKeyframeForm(player, keyframeIndex, response) {
 
 export function renameKeyframe(player, keyframeIndex, currentName, newName) {
   const timeline = getTimeline(player);
+  if (!timeline?.keyframes[keyframeIndex]) return;
 
-  if (newName === currentName || newName === "") {
+  if (newName === currentName || newName.trim() === "") {
     newName = "";
   }
   timeline.keyframes[keyframeIndex].name = newName;
@@ -84,28 +85,22 @@ export function renameKeyframe(player, keyframeIndex, currentName, newName) {
 export function delKeyframe(player, keyframeIndex, value) {
   if (value) {
     const timeline = getTimeline(player);
+    if (!timeline?.keyframes) return false;
 
     timeline.keyframes.splice(keyframeIndex, 1);
     saveTimeline(player, timeline);
-
     return true;
   }
+  return false;
 }
 
 export function getKeyframe(player, keyframeIndex) {
   const timeline = getTimeline(player);
 
-  if (!timeline) {
-    throw new Error("Timeline não encontrada");
-  }
-
-  if (!timeline.keyframes) {
-    throw new Error("Timeline sem keyframes");
-  }
-
-  if (!timeline.keyframes[keyframeIndex]) {
+  if (!timeline) throw new Error("Timeline não encontrada");
+  if (!timeline.keyframes) throw new Error("Timeline sem keyframes");
+  if (!timeline.keyframes[keyframeIndex])
     throw new Error(`Keyframe ${keyframeIndex} não existe`);
-  }
 
   return timeline.keyframes[keyframeIndex];
 }
@@ -120,18 +115,15 @@ export function getKeyframeRot(player, keyframeIndex) {
 
 export function setKeyframePosition(player, index, text) {
   const timeline = getTimeline(player);
-  const keyframe = timeline.keyframes[index];
-
+  const keyframe = timeline?.keyframes[index];
   if (!keyframe) return false;
 
   const pos = Tools.parseVector3(text);
 
-  // garante base segura
   keyframe.position = {
-    x: keyframe.position?.x ?? 0,
-    y: keyframe.position?.y ?? 0,
-    z: keyframe.position?.z ?? 0,
-    ...pos,
+    x: Number((pos.x ?? keyframe.position?.x ?? 0).toFixed(2)),
+    y: Number((pos.y ?? keyframe.position?.y ?? 0).toFixed(2)),
+    z: Number((pos.z ?? keyframe.position?.z ?? 0).toFixed(2)),
   };
 
   saveTimeline(player, timeline);
@@ -140,17 +132,15 @@ export function setKeyframePosition(player, index, text) {
 
 export function setKeyframeRotation(player, index, text) {
   const timeline = getTimeline(player);
-  const keyframe = timeline.keyframes[index];
-
+  const keyframe = timeline?.keyframes[index];
   if (!keyframe) return false;
 
-  const rot = Tools.parseVector3(text);
+  const rot = Tools.parseVector3(text); // Assume que parseVector3 retorne propriedades X e Y
 
-  // base segura
+  // Corrigido: Mapeando propriedades X e Y do vetor para Pitch e Yaw
   keyframe.rotation = {
-    pitch: keyframe.rotation?.pitch ?? 0,
-    yaw: keyframe.rotation?.yaw ?? 0,
-    ...rot,
+    pitch: Number((rot.x ?? keyframe.rotation?.pitch ?? 0).toFixed(2)),
+    yaw: Number((rot.y ?? keyframe.rotation?.yaw ?? 0).toFixed(2)),
   };
 
   saveTimeline(player, timeline);
@@ -159,12 +149,19 @@ export function setKeyframeRotation(player, index, text) {
 
 export function delLastKeyframe(player) {
   const timeline = getTimeline(player);
-  timeline.keyframes.pop();
-  saveTimeline(player, timeline);
+  if (timeline && timeline.keyframes.length > 0) {
+    timeline.keyframes.pop();
+    saveTimeline(player, timeline);
+  }
 }
 
 export function setKeyframe(player) {
-  const timeline = getTimeline(player);
+  let timeline = getTimeline(player);
+
+  if (!timeline) {
+    timeline = createTimeline(player);
+    saveTimeline(player, timeline);
+  }
 
   if (limitTimelineKeyframes(player)) return;
   if (!validateTimelineDimension(player, timeline)) return;
@@ -176,10 +173,9 @@ export function setKeyframe(player) {
       Tools.getDynamicProperty(player, "editKeyframe"),
     );
 
-    if (!timeline.keyframes[keyframeIndex]) return;
+    if (isNaN(keyframeIndex) || !timeline.keyframes[keyframeIndex]) return;
 
     timeline.keyframes[keyframeIndex] = keyframe;
-
     saveTimeline(player, timeline);
 
     player.removeTag("editKeyframe");

@@ -42,11 +42,6 @@ export function editKeyframe_UI(player, keyframeIndex) {
         },
       },
       {
-        type: "dropdown",
-        label: "Transições",
-        options: Transicoes,
-      },
-      {
         type: "toggle",
         label: "Regravar? Marque e salve.",
       },
@@ -101,13 +96,13 @@ export function editKeyframe_UI(player, keyframeIndex) {
 
       renameKeyframe(player, keyframeIndex, keyframeName, value[0]);
 
-      if (redoKeyframe(player, keyframeIndex, value[2])) return;
+      if (redoKeyframe(player, keyframeIndex, value[1])) return;
 
-      if (delKeyframe(player, keyframeIndex, value[3])) {
+      if (delKeyframe(player, keyframeIndex, value[2])) {
         return listKeyframe_UI(player);
       }
-      setKeyframePosition(player, keyframeIndex, value[4]);
-      setKeyframeRotation(player, keyframeIndex, value[5]);
+      setKeyframePosition(player, keyframeIndex, value[3]);
+      setKeyframeRotation(player, keyframeIndex, value[4]);
 
       return editKeyframe_UI(player, keyframeIndex);
     });

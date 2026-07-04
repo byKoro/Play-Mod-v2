@@ -5,19 +5,33 @@ import { saveTimelineUi } from "../ui/saveTimelineUi";
 export function createTimeline(player) {
   return {
     name: "",
+    tag: "play-mod",
     playerId: player.id,
     defaultTransition: 0,
-    defaulMaxTime: 30,
+    defaultMaxTime: 30, // Corrigido: 'defaultMaxTime'
     keyframes: [],
   };
 }
 
+function getCurrentTimeline(player) {
+  // Corrigido: Adicionado o return e fallback para string vazia
+  return Tools.getDynamicProperty(player, "currentTimeline") ?? "";
+}
+
 export function getTimeline(player) {
-  return Tools.getDynamicProperty(player, "timeline");
+  const current = getCurrentTimeline(player);
+  if (current === "") {
+    return Tools.getDynamicProperty(player, "timeline");
+  } else {
+    return Tools.getDynamicProperty(player, current);
+  }
 }
 
 export function saveTimeline(player, timeline) {
-  Tools.setDynamicProperty(player, "timeline", timeline);
+  const currentTimeline = getCurrentTimeline(player);
+  // Se a timeline atual for vazia, salva na chave padrão "timeline"
+  const key = currentTimeline === "" ? "timeline" : currentTimeline;
+  Tools.setDynamicProperty(player, key, timeline);
 }
 
 export function resetTimeline(player, value) {
@@ -31,6 +45,7 @@ export function registerTimelineEvents() {
     if (!initialSpawn) return;
 
     if (!getTimeline(player)) {
+      Tools.setDynamicProperty(player, "currentTimeline", "");
       saveTimeline(player, createTimeline(player));
     }
   });
@@ -38,7 +53,6 @@ export function registerTimelineEvents() {
 
 export function setMaxTimeline(player, newDelay) {
   const timeline = getTimeline(player);
-
   timeline.defaultMaxTime = newDelay;
   saveTimeline(player, timeline);
 }
@@ -53,32 +67,58 @@ export function validateTimelineDimension(player, timeline) {
 
   for (let i = 0; i < timeline.keyframes.length; i++) {
     const keyframe = timeline.keyframes[i];
-
     if (!keyframe) continue;
 
     if (keyframe.dimension !== playerDim) {
       player.sendMessage(`§cErro: Keyframe ${i} está em outra dimensão!`);
-
       return false;
     }
   }
-
   return true;
 }
 
 export function exportTimeline(player, value) {
   const timeline = getTimeline(player);
 
-  if (value === undefined || value.trim() == "") {
+  if (value === undefined || value.trim() === "") {
     player.dimension.playSound("note.bass", player.location);
     return saveTimelineUi(player);
   }
+
+  // Corrigido para evitar erros se timeline.name for undefined
+  if (timeline.name && timeline.name.includes(value)) {
+    player.dimension.playSound("note.bass", player.location);
+    return saveTimelineUi(player);
+  }
+
+  createNewTimeline(player, value);
 }
 
 export function limitTimelineKeyframes(player) {
   const timeline = getTimeline(player);
   if (timeline.keyframes.length > 20) {
-    world.sendMessage("§c Limite de keyframes atingido!");
+    // Dica: Use player.sendMessage em vez de world.sendMessage
+    // para que apenas o jogador que atingiu o limite veja o erro.
+    player.sendMessage("§c Limite de keyframes atingido!");
     return true;
   }
+  return false;
+}
+
+function createNewTimeline(player, value) {
+  const timeline = getTimeline(player);
+  timeline.name = value;
+
+  Tools.setDynamicProperty(player, value, timeline);
+  Tools.setDynamicProperty(player, "currentTimeline", value); // Corrigido: 'currentTimeline'
+
+  player.sendMessage("§aTimeline criada com sucesso!");
+}
+
+export function hasTimeline(player, value) {
+  const propertiesId = player.getDynamicPropertyIds();
+  if (propertiesId.includes(value)) {
+    return true;
+  }
+  return false;
 }
