@@ -9,19 +9,24 @@ import {
 } from "../services/keyframeService";
 import { Tools } from "../utils/index";
 import { listKeyframe_UI } from "./listKeyframeUi";
-import { validateTimelineDimension } from "../services/index";
+import {
+  getCurrentTimeline,
+  validateTimelineDimension,
+} from "../services/index";
+import { listTimelinesUi } from "./listTimelinesUi";
 
 export function main_UI(player) {
   system.run(async () => {
     const actions = [
       { text: "Definir Keyframe", action: () => setKeyframe(player) },
       { text: "Gerenciar Keyframes", action: () => listKeyframe_UI(player) },
-      { text: "Gerenciar Timelines", action: () => listTimelines(player) },
+      { text: "Gerenciar Timelines", action: () => listTimelinesUi(player) },
       { text: "Deletar Último Frame", action: () => delLastKeyframe(player) },
       { text: "Iniciar", action: () => iniciar(player) },
     ];
 
-    const form = new ActionFormData().title("Título");
+    const form = new ActionFormData();
+    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
 
     actions.forEach(({ text }) => form.button(text));
 

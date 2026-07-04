@@ -12,6 +12,7 @@ import {
   getKeyframeRot,
   setKeyframePosition,
   setKeyframeRotation,
+  getCurrentTimeline,
 } from "../services/index.js";
 import { getTimeline } from "../services/index.js";
 
@@ -68,7 +69,8 @@ export function editKeyframe_UI(player, keyframeIndex) {
     ];
 
     // Constroi modal
-    const form = new ModalFormData().title("");
+    const form = new ModalFormData();
+    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
     campos.forEach((campo) => {
       switch (campo.type) {
         case "textField":

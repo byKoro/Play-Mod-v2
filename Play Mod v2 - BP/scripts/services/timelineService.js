@@ -8,12 +8,12 @@ export function createTimeline(player) {
     tag: "play-mod",
     playerId: player.id,
     defaultTransition: 0,
-    defaultMaxTime: 30, // Corrigido: 'defaultMaxTime'
+    defaultMaxTime: 30,
     keyframes: [],
   };
 }
 
-function getCurrentTimeline(player) {
+export function getCurrentTimeline(player) {
   // Corrigido: Adicionado o return e fallback para string vazia
   return Tools.getDynamicProperty(player, "currentTimeline") ?? "";
 }
@@ -38,6 +38,7 @@ export function resetTimeline(player, value) {
   if (value) {
     saveTimeline(player, createTimeline(player));
   }
+  return true;
 }
 
 export function registerTimelineEvents() {
@@ -45,7 +46,7 @@ export function registerTimelineEvents() {
     if (!initialSpawn) return;
 
     if (!getTimeline(player)) {
-      Tools.setDynamicProperty(player, "currentTimeline", "");
+      Tools.setDynamicProperty(player, "currentTimeline", "timeline");
       saveTimeline(player, createTimeline(player));
     }
   });
@@ -121,4 +122,34 @@ export function hasTimeline(player, value) {
     return true;
   }
   return false;
+}
+
+export function getTimelines(player) {
+  const allIds = player.getDynamicPropertyIds();
+  const validTimelines = [];
+
+  for (const id of allIds) {
+    if (id === "currentTimeline" || id === "editKeyframe") continue;
+
+    try {
+      const propertyData = Tools.getDynamicProperty(player, id);
+
+      if (propertyData && propertyData.tag === "play-mod") {
+        validTimelines.push(id);
+      }
+    } catch (error) {
+      continue;
+    }
+  }
+
+  return validTimelines;
+}
+
+export function setCurrentTimeline(player, timeline) {
+  const timelines = getTimelines(player);
+
+  if (!timelines.includes(timeline)) return false;
+
+  Tools.setDynamicProperty(player, "currentTimeline", timeline);
+  return true;
 }

@@ -3,7 +3,7 @@ import { system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { main_UI } from "./mainUi";
 import { editKeyframe_UI } from "./editKeyframesUi";
-import { getTimeline } from "../services/timelineService";
+import { getCurrentTimeline, getTimeline } from "../services/timelineService";
 import { editAllKeyframes } from "./editAllKeyframesUI";
 import { saveTimelineUi } from "./saveTimelineUi";
 
@@ -13,7 +13,7 @@ export function listKeyframe_UI(player) {
 
     const buttons = [
       {
-        text: "Salvar Timeline",
+        text: "Salvar Nova Timeline",
         action: () => saveTimelineUi(player),
       },
       {
@@ -29,7 +29,8 @@ export function listKeyframe_UI(player) {
       });
     });
 
-    const form = new ActionFormData().title("Título");
+    const form = new ActionFormData();
+    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
 
     buttons.forEach(({ text }) => form.button(text));
 
