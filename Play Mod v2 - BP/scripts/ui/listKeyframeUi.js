@@ -13,11 +13,11 @@ export function listKeyframe_UI(player) {
 
     const buttons = [
       {
-        text: "Salvar Nova Timeline",
+        text: Tools.t("menu.keyframes.button.save_new"),
         action: () => saveTimelineUi(player),
       },
       {
-        text: "Alterar Todos",
+        text: Tools.t("menu.keyframes.button.edit_all"),
         action: () => editAllKeyframes(player),
       },
     ];
@@ -25,7 +25,10 @@ export function listKeyframe_UI(player) {
     if (timeline && timeline.keyframes) {
       timeline.keyframes.forEach((keyframe, index) => {
         buttons.push({
-          text: keyframe.name === "" ? `Keyframe ${index}` : keyframe.name,
+          text:
+            keyframe.name === ""
+              ? Tools.t("menu.keyframes.default_name", [index])
+              : keyframe.name,
           action: () => editKeyframe_UI(player, index),
         });
       });
@@ -34,7 +37,9 @@ export function listKeyframe_UI(player) {
     const currentName = getCurrentTimeline(player);
     const form = new ActionFormData();
     form.title(
-      currentName ? `Timeline atual: ${currentName}` : "Sem Timeline Ativa",
+      currentName
+        ? Tools.t("menu.keyframes.title.active", [currentName])
+        : Tools.t("menu.keyframes.title.none"),
     );
 
     buttons.forEach(({ text }) => form.button(text));
@@ -47,6 +52,9 @@ export function listKeyframe_UI(player) {
       buttons[response.selection]?.action();
     } catch (error) {
       console.error("Erro na UI de Keyframes: " + error);
+      Tools.playError(player);
+      player.sendMessage(Tools.t("sys.error.not_found"));
+      main_UI(player);
     }
   });
 }

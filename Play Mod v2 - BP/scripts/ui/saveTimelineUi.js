@@ -7,12 +7,16 @@ import {
   getCurrentTimeline,
 } from "../services/index";
 import { listKeyframe_UI } from "../ui/listKeyframeUi";
+import { Tools } from "../utils/tools";
 
-export function saveTimelineUi(player, erroMsg = "") {
+export function saveTimelineUi(player) {
   system.run(() => {
     const form = new ModalFormData();
-    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
-    form.textField("Salvar nome da timeline", "Escreva...");
+    form.title(Tools.t("ui.save.title"));
+    form.textField(
+      Tools.t("ui.save.field.label"),
+      Tools.t("ui.save.field.placeholder"),
+    );
 
     form.show(player).then((response) => {
       if (response.canceled) return listKeyframe_UI(player);
@@ -20,14 +24,15 @@ export function saveTimelineUi(player, erroMsg = "") {
       const timelineNameString = response.formValues[0]?.trim();
 
       if (!timelineNameString) {
-        player.dimension.playSound("note.bass", player.location);
-        return saveTimelineUi(player, "§cO nome não pode ser vazio!");
+        Tools.playError(player);
+        player.sendMessage(Tools.t("sys.error.empty_name"));
+        return saveTimelineUi(player);
       }
 
       if (hasTimeline(player, timelineNameString)) {
-        player.dimension.playSound("note.bass", player.location);
-
-        return saveTimelineUi(player, "§cEssa timeline já existe!");
+        Tools.playError(player);
+        player.sendMessage(Tools.t("sys.error.exists"));
+        return saveTimelineUi(player);
       }
 
       const timeline = getTimeline(player);

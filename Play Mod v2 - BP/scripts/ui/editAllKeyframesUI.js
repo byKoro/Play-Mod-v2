@@ -7,6 +7,7 @@ import {
   setMaxTimeline,
 } from "../services/index";
 import { listKeyframe_UI } from "./listKeyframeUi";
+import { Tools } from "../utils/tools";
 
 const min = 1;
 const max = 60;
@@ -14,11 +15,11 @@ const max = 60;
 export function editAllKeyframes(player) {
   system.run(() => {
     const form = new ModalFormData();
-    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
-    form.slider("Tempo total em segundos", min, max, {
+    form.title(Tools.t("ui.edit_all.title", [getCurrentTimeline(player)]));
+    form.slider(Tools.t("ui.edit_all.transition.label"), min, max, {
       defaultValue: getMaxTime(player),
     });
-    form.toggle("§cDeletar todos ?");
+    form.toggle(Tools.t("ui.edit_all.reset.label"));
 
     form.show(player).then((response) => {
       if (response.canceled) return listKeyframe_UI(player);

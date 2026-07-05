@@ -1,4 +1,3 @@
-import { listKeyframe_UI } from "../ui/listKeyframeUi";
 import { Tools } from "../utils/index";
 import {
   createTimeline,
@@ -27,6 +26,9 @@ export function addKeyframe(player, keyframe) {
 
   timeline.keyframes.push(keyframe);
   saveTimeline(player, timeline);
+
+  Tools.playSuccess(player);
+  player.sendMessage(Tools.t("sys.msg.success.keyframe_set"));
 }
 
 function getHeadPosition(player) {
@@ -63,12 +65,14 @@ export function redoKeyframe(player, keyframeIndex, value) {
   return false;
 }
 
+/**
+ * Valida se o player marcou mais de uma opção conflitante no modal de edição
+ * (ex: "Regravar" + "Deletar" ao mesmo tempo). Não decide nada por conta
+ * própria — só informa se está tudo certo (true) ou se há conflito (false).
+ */
 export function validateEditKeyframeForm(player, keyframeIndex, response) {
   const quantidade = response.filter((valor) => valor === true).length;
-
-  if (quantidade > 1) {
-    return editKeyframe_UI(player, keyframeIndex);
-  }
+  return quantidade <= 1;
 }
 
 export function renameKeyframe(player, keyframeIndex, currentName, newName) {
@@ -89,6 +93,9 @@ export function delKeyframe(player, keyframeIndex, value) {
 
     timeline.keyframes.splice(keyframeIndex, 1);
     saveTimeline(player, timeline);
+
+    Tools.playSuccess(player);
+    player.sendMessage(Tools.t("sys.msg.success.keyframe_deleted"));
     return true;
   }
   return false;
@@ -152,6 +159,11 @@ export function delLastKeyframe(player) {
   if (timeline && timeline.keyframes.length > 0) {
     timeline.keyframes.pop();
     saveTimeline(player, timeline);
+    Tools.playSuccess(player);
+    player.sendMessage(Tools.t("sys.msg.success.frame_removed"));
+  } else {
+    Tools.playError(player);
+    player.sendMessage(Tools.t("sys.error.no_keyframes"));
   }
 }
 
@@ -179,6 +191,10 @@ export function setKeyframe(player) {
     saveTimeline(player, timeline);
 
     player.removeTag("editKeyframe");
+
+    Tools.playSuccess(player);
+    player.sendMessage(Tools.t("sys.msg.success.keyframe_updated"));
+
     return editKeyframe_UI(player, keyframeIndex);
   }
 

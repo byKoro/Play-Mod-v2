@@ -7,16 +7,16 @@ import {
 } from "../services/index";
 import { listTimelinesUi } from "./listTimelinesUi";
 import { main_UI } from "./mainUi";
+import { Tools } from "../utils/tools";
 
 export function viewTimelineUi(player, select) {
   const form = new ActionFormData();
 
-  form.title(`Timeline: ${select}`);
-  //form.body(`Quantidade de frames: ${frames}`);
-  form.button("Deletar");
-  form.button("Carregar");
+  form.title(Tools.t("ui.view.title", [select]));
+  form.button(Tools.t("ui.view.button.delete"));
+  form.button(Tools.t("ui.view.button.load"));
   form.show(player).then((response) => {
-    if (response.canceled) listTimelinesUi(player);
+    if (response.canceled) return listTimelinesUi(player);
 
     const selection = response.selection;
 

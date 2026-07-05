@@ -37,6 +37,8 @@ export function saveTimeline(player, timeline) {
 export function resetTimeline(player, value) {
   if (value) {
     saveTimeline(player, createTimeline(player));
+    Tools.playSuccess(player);
+    player.sendMessage(Tools.t("sys.msg.success.generic"));
   }
   return true;
 }
@@ -72,7 +74,8 @@ export function validateTimelineDimension(player, timeline) {
     if (!keyframe) continue;
 
     if (keyframe.dimension !== playerDim) {
-      player.sendMessage(`§cErro: Keyframe ${i} está em outra dimensão!`);
+      Tools.playError(player);
+      player.sendMessage(Tools.t("sys.error.dimension", [i]));
       return false;
     }
   }
@@ -83,13 +86,13 @@ export function exportTimeline(player, value) {
   const timeline = getTimeline(player);
 
   if (value === undefined || value.trim() === "") {
-    player.dimension.playSound("note.bass", player.location);
+    Tools.playError(player);
     return saveTimelineUi(player);
   }
 
   // Corrigido para evitar erros se timeline.name for undefined
   if (timeline.name && timeline.name.includes(value)) {
-    player.dimension.playSound("note.bass", player.location);
+    Tools.playError(player);
     return saveTimelineUi(player);
   }
 
@@ -101,7 +104,8 @@ export function limitTimelineKeyframes(player) {
   if (timeline.keyframes.length > 20) {
     // Dica: Use player.sendMessage em vez de world.sendMessage
     // para que apenas o jogador que atingiu o limite veja o erro.
-    player.sendMessage("§c Limite de keyframes atingido!");
+    Tools.playError(player);
+    player.sendMessage(Tools.t("sys.error.limit"));
     return true;
   }
   return false;
@@ -114,7 +118,8 @@ function createNewTimeline(player, value) {
   Tools.setDynamicProperty(player, value, timeline);
   Tools.setDynamicProperty(player, "currentTimeline", value); // Corrigido: 'currentTimeline'
 
-  player.sendMessage("§aTimeline criada com sucesso!");
+  Tools.playSuccess(player);
+  player.sendMessage(Tools.t("sys.msg.success.timeline_created"));
 }
 
 export function hasTimeline(player, value) {
@@ -173,6 +178,7 @@ export function deleteTimeline(player, timelineName) {
     Tools.setDynamicProperty(player, "currentTimeline", "");
   }
 
-  player.sendMessage(`§aTimeline "${timelineName}" deletada com sucesso!`);
+  Tools.playSuccess(player);
+  player.sendMessage(Tools.t("sys.msg.success.timeline_deleted", [timelineName]));
   return true;
 }

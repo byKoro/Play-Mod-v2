@@ -1,0 +1,50 @@
+pack.name=Play Mod v.2 BP[cite: 1]
+pack.description=Система таймлайнов и ключевых кадров для камер[cite: 1]
+
+menu.main.title=§6Текущий таймлайн: %s \n §7Основное меню управления
+menu.keyframes.title.active=§6Текущий таймлайн: %s \n §7Список кадров выбранной линии
+menu.keyframes.title.none=§eНет активного таймлайна \n §7Выберите или создайте новый
+menu.timelines.title=§6Сохранённые таймлайны \n §7Ваши записанные анимации
+ui.view.title=§6Таймлайн: %s \n §7Просмотр параметров
+ui.save.title=§6Экспорт таймлайна \n §7Сохранение в файл
+ui.edit.title=§6Редактировать кадр %s \n §7Изменение параметров кадра
+ui.edit_all.title=§6Изменить все кадры: %s \n §7Массовое редактирование
+
+ui.save.field.label=§7Название таймлайна \n §7Укажите имя для экспорта
+ui.save.field.placeholder=§7Введите название... \n §7Используйте текст без символов
+ui.edit.rename.label=§7Название кадра \n §7Изменить имя этого кадра
+ui.edit.pos.label=§7Точная настройка позиции \n §7Координаты камеры XYZ
+ui.edit.rot.label=§7Точная настройка поворота \n §7Углы наклона и вращения
+ui.edit_all.transition.label=§7Общее время в секундах \n §7Длительность всей анимации
+menu.keyframes.default_name=§7Кадр %s \n §7Стандартное имя кадра
+
+menu.main.button.set_keyframe=§2Задать ключевой кадр \n §7Добавить текущую позицию камеры
+menu.main.button.manage_keyframes=§2Управление кадрами \n §7Посмотреть и изменить созданные кадры
+menu.main.button.manage_timelines=§2Управление таймлайнами \n §7Посмотреть список ваших таймлайнов
+menu.main.button.start=§2Начать \n §7Запустить воспроизведение анимации
+menu.keyframes.button.save_new=§2Сохранить новый таймлайн \n §7Записать текущую анимацию
+menu.keyframes.button.edit_all=§2Изменить всё \n §7Применить настройки ко всем кадрам
+ui.view.button.load=§2Загрузить \n §7Сделать этот таймлайн активным
+ui.edit.button.submit=§2Сохранить \n §7Применить внесенные изменения
+
+menu.main.button.delete_last=§cУдалить последний кадр \n §7Отменить последнее действие
+ui.view.button.delete=§cУдалить \n §7Безвозвратно стереть этот таймлайн
+ui.edit.redo.label=§cПерезаписать? Отметьте и сохраните. \n §7Обновить позицию на текущую
+ui.edit.delete.label=§cУдалить? Отметьте и сохраните. \n §7Убрать этот кадр из таймлайна
+ui.edit_all.reset.label=§4Удалить все? \n §7Очистить весь таймлайн
+sys.msg.success.generic=§9[Play Mod] §aГотово![cite: 3]
+sys.msg.success.keyframe_set=§9[Play Mod] §aКлючевой кадр успешно задан![cite: 3]
+sys.msg.success.keyframe_updated=§9[Play Mod] §aКадр обновлён![cite: 3]
+sys.msg.success.keyframe_deleted=§9[Play Mod] §aКадр удалён![cite: 3]
+sys.msg.success.frame_removed=§9[Play Mod] §aПоследний кадр удалён!
+sys.msg.success.timeline_created=§9[Play Mod] §aТаймлайн успешно создан!
+sys.msg.success.timeline_deleted=§9[Play Mod] §aТаймлайн "%s" успешно удалён!
+sys.error.empty_name=§cИмя не может быть пустым!
+sys.error.exists=§cЭтот таймлайн уже существует!
+sys.error.dimension=§cОшибка: кадр %s находится в другом измерении!
+sys.error.limit=§cДостигнут лимит кадров!
+sys.error.not_found=§cТаймлайн не найден!
+sys.error.no_keyframes=§cВ таймлайне нет кадров!
+sys.error.invalid_index=§cКадр %s не существует!
+sys.error.multiple_actions=§cОтметьте только один вариант (Перезаписать или Удалить) за раз!
+sys.error.no_timelines=§cУ вас пока нет сохранённых таймлайнов!

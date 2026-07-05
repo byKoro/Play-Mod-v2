@@ -14,16 +14,24 @@ import {
   setKeyframeRotation,
   getCurrentTimeline,
 } from "../services/index.js";
-import { getTimeline } from "../services/index.js";
-
-const Transicoes = ["Teste", "Teste2"];
 
 export function editKeyframe_UI(player, keyframeIndex) {
   system.run(() => {
-    const keyframe = getKeyframe(player, keyframeIndex);
+    let keyframe, keyframePos, keyframeRot;
+
+    try {
+      keyframe = getKeyframe(player, keyframeIndex);
+      keyframePos = getKeyframePos(player, keyframeIndex);
+      keyframeRot = getKeyframeRot(player, keyframeIndex);
+    } catch (error) {
+      // Ex: o keyframe foi deletado por outro caminho e o índice ficou velho.
+      console.error(error);
+      Tools.playError(player);
+      player.sendMessage(Tools.t("sys.error.invalid_index", [keyframeIndex]));
+      return listKeyframe_UI(player);
+    }
+
     const keyframeName = keyframe.name ?? String(keyframeIndex);
-    const keyframePos = getKeyframePos(player, keyframeIndex);
-    const keyframeRot = getKeyframeRot(player, keyframeIndex);
     const posText = Object.entries(keyframePos)
       .map(([key, value]) => `${key}: ${value}`)
       .join("  ");
@@ -36,7 +44,7 @@ export function editKeyframe_UI(player, keyframeIndex) {
     const campos = [
       {
         type: "textField",
-        label: "Nomeie o keyframe",
+        label: Tools.t("ui.edit.rename.label"),
         placeholder: keyframeName,
         options: {
           defaultValue: keyframeName,
@@ -44,15 +52,15 @@ export function editKeyframe_UI(player, keyframeIndex) {
       },
       {
         type: "toggle",
-        label: "Regravar? Marque e salve.",
+        label: Tools.t("ui.edit.redo.label"),
       },
       {
         type: "toggle",
-        label: "Deletar? Marque e salve.",
+        label: Tools.t("ui.edit.delete.label"),
       },
       {
         type: "textField",
-        label: "Ajuste fino posição",
+        label: Tools.t("ui.edit.pos.label"),
         placeholder: keyframeName,
         options: {
           defaultValue: posText,
@@ -60,7 +68,7 @@ export function editKeyframe_UI(player, keyframeIndex) {
       },
       {
         type: "textField",
-        label: "Ajuste fino rotação",
+        label: Tools.t("ui.edit.rot.label"),
         placeholder: keyframeName,
         options: {
           defaultValue: rotText,
@@ -70,7 +78,7 @@ export function editKeyframe_UI(player, keyframeIndex) {
 
     // Constroi modal
     const form = new ModalFormData();
-    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
+    form.title(Tools.t("ui.edit.title", [keyframeIndex]));
     campos.forEach((campo) => {
       switch (campo.type) {
         case "textField":
@@ -87,14 +95,19 @@ export function editKeyframe_UI(player, keyframeIndex) {
       }
     });
 
-    form.submitButton("Salvar");
+    form.submitButton(Tools.t("ui.edit.button.submit"));
 
     // Ações do modal
     form.show(player).then((response) => {
       const value = response.formValues;
       if (response.canceled) return listKeyframe_UI(player);
 
-      validateEditKeyframeForm(player, keyframeIndex, value);
+      // Bloqueia se o player marcou "Regravar" e "Deletar" ao mesmo tempo.
+      if (!validateEditKeyframeForm(player, keyframeIndex, value)) {
+        Tools.playError(player);
+        player.sendMessage(Tools.t("sys.error.multiple_actions"));
+        return editKeyframe_UI(player, keyframeIndex);
+      }
 
       renameKeyframe(player, keyframeIndex, keyframeName, value[0]);
 
@@ -105,6 +118,9 @@ export function editKeyframe_UI(player, keyframeIndex) {
       }
       setKeyframePosition(player, keyframeIndex, value[3]);
       setKeyframeRotation(player, keyframeIndex, value[4]);
+
+      Tools.playSuccess(player);
+      player.sendMessage(Tools.t("sys.msg.success.keyframe_updated"));
 
       return editKeyframe_UI(player, keyframeIndex);
     });

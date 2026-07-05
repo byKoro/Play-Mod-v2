@@ -42,4 +42,24 @@ export class Tools {
 
     return vector;
   }
+
+  /**
+   * Monta um RawMessage para uso com o sistema de tradução (texts/*.lang).
+   * @param {string} key chave de tradução
+   * @param {(string|number)[]} [withArgs] valores para os %s da chave
+   */
+  static t(key, withArgs) {
+    if (!withArgs || withArgs.length === 0) return { translate: key };
+    return { translate: key, with: withArgs.map(String) };
+  }
+
+  /** Som padrão de erro (pedido: note.bass) */
+  static playError(player) {
+    player.dimension.playSound("note.bass", player.location);
+  }
+
+  /** Som padrão de sucesso (pedido: level up) */
+  static playSuccess(player) {
+    player.dimension.playSound("random.levelup", player.location);
+  }
 }
