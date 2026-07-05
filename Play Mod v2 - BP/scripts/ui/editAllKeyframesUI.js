@@ -11,8 +11,6 @@ import { listKeyframe_UI } from "./listKeyframeUi";
 const min = 1;
 const max = 60;
 
-let del = "§cDeletar todos ?";
-
 export function editAllKeyframes(player) {
   system.run(() => {
     const form = new ModalFormData();
@@ -20,7 +18,7 @@ export function editAllKeyframes(player) {
     form.slider("Tempo total em segundos", min, max, {
       defaultValue: getMaxTime(player),
     });
-    form.toggle(del);
+    form.toggle("§cDeletar todos ?");
 
     form.show(player).then((response) => {
       if (response.canceled) return listKeyframe_UI(player);
@@ -29,7 +27,7 @@ export function editAllKeyframes(player) {
       const currentMaxTime = values[0];
       const delAllKeyframes = values[1];
 
-      if (resetTimeline(player, delAllKeyframes)) del = "§cTodos deletados!";
+      if (resetTimeline(player, delAllKeyframes));
       setMaxTimeline(player, currentMaxTime);
       return editAllKeyframes(player);
     });

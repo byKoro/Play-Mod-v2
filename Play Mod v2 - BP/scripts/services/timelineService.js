@@ -47,6 +47,7 @@ export function registerTimelineEvents() {
 
     if (!getTimeline(player)) {
       Tools.setDynamicProperty(player, "currentTimeline", "timeline");
+      Tools.setDynamicProperty(player, "dinamicText", "");
       saveTimeline(player, createTimeline(player));
     }
   });
@@ -151,5 +152,27 @@ export function setCurrentTimeline(player, timeline) {
   if (!timelines.includes(timeline)) return false;
 
   Tools.setDynamicProperty(player, "currentTimeline", timeline);
+  return true;
+}
+
+export function getTimelineIndex(player, timelineName) {
+  const timelines = getTimelines(player);
+  return timelines.indexOf(timelineName);
+}
+
+export function deleteTimeline(player, timelineName) {
+  const timelines = getTimelines(player);
+
+  if (!timelines.includes(timelineName)) {
+    return false;
+  }
+  Tools.setDynamicProperty(player, timelineName, undefined);
+
+  const atual = Tools.getDynamicProperty(player, "currentTimeline");
+  if (atual === timelineName) {
+    Tools.setDynamicProperty(player, "currentTimeline", "");
+  }
+
+  player.sendMessage(`§aTimeline "${timelineName}" deletada com sucesso!`);
   return true;
 }

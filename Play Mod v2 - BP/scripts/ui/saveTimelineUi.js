@@ -9,13 +9,10 @@ import {
 import { listKeyframe_UI } from "../ui/listKeyframeUi";
 
 export function saveTimelineUi(player, erroMsg = "") {
-  // Se houver uma mensagem de erro na reabertura, usamos ela, se não, o texto padrão
-  let textField = erroMsg !== "" ? erroMsg : "Salvar nome da timeline";
-
   system.run(() => {
     const form = new ModalFormData();
     form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
-    form.textField(textField, "Escreva...");
+    form.textField("Salvar nome da timeline", "Escreva...");
 
     form.show(player).then((response) => {
       if (response.canceled) return listKeyframe_UI(player);

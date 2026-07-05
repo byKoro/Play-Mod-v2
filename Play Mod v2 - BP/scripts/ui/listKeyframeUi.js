@@ -22,15 +22,20 @@ export function listKeyframe_UI(player) {
       },
     ];
 
-    timeline.keyframes.forEach((keyframe, index) => {
-      buttons.push({
-        text: keyframe.name === "" ? `Keyframe ${index}` : keyframe.name,
-        action: () => editKeyframe_UI(player, index),
+    if (timeline && timeline.keyframes) {
+      timeline.keyframes.forEach((keyframe, index) => {
+        buttons.push({
+          text: keyframe.name === "" ? `Keyframe ${index}` : keyframe.name,
+          action: () => editKeyframe_UI(player, index),
+        });
       });
-    });
+    }
 
+    const currentName = getCurrentTimeline(player);
     const form = new ActionFormData();
-    form.title(`Timeline atual: ${getCurrentTimeline(player)}`);
+    form.title(
+      currentName ? `Timeline atual: ${currentName}` : "Sem Timeline Ativa",
+    );
 
     buttons.forEach(({ text }) => form.button(text));
 
@@ -41,7 +46,7 @@ export function listKeyframe_UI(player) {
 
       buttons[response.selection]?.action();
     } catch (error) {
-      console.error(error);
+      console.error("Erro na UI de Keyframes: " + error);
     }
   });
 }
