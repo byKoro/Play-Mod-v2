@@ -11,6 +11,7 @@ import { Tools } from "../utils/index";
 import { listKeyframe_UI } from "./listKeyframeUi";
 import {
   getCurrentTimeline,
+  iniciar,
   validateTimelineDimension,
 } from "../services/index";
 import { listTimelinesUi } from "./listTimelinesUi";

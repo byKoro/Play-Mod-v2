@@ -179,6 +179,8 @@ export function deleteTimeline(player, timelineName) {
   }
 
   Tools.playSuccess(player);
-  player.sendMessage(Tools.t("sys.msg.success.timeline_deleted", [timelineName]));
+  player.sendMessage(
+    Tools.t("sys.msg.success.timeline_deleted", [timelineName]),
+  );
   return true;
 }
