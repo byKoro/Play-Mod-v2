@@ -1,0 +1,51 @@
+pack.name=Play Mod v.2 BP
+pack.description=Sistema de Timeline y Keyframes para cámaras
+
+menu.main.title=§6Timeline: %s
+menu.keyframes.title.active=§6Timeline: %s
+menu.keyframes.title.none=§eSin Timeline Activa \n §jSelecciona o crea una nueva línea
+menu.timelines.title=§6Timelines Guardadas \n §jTus animaciones grabadas
+ui.view.title=§6Timeline: %s \n §jVisualizar parámetros
+ui.save.title=§6Exportar Timeline \n §jGuardar en un archivo
+ui.edit.title=§6Editar Keyframe %s \n §jModificar opciones del fotograma
+ui.edit_all.title=§6Cambiar Todos los Keyframes: %s \n §jEditor en masa
+
+ui.save.field.label=§jGuardar nombre de la timeline \n §jDefine el nombre para exportar
+ui.save.field.placeholder=§jEscribe el nombre... \n §jUsa texto sin caracteres especiales
+ui.edit.rename.label=§jNombra el keyframe \n §jCambiar el nombre de este fotograma específico
+ui.edit.pos.label=§jAjuste fino de posición \n §jCoordenadas XYZ de la cámara
+ui.edit.rot.label=§jAjuste fino de rotación \n §jÁngulos de inclinación y rotación
+ui.edit_all.transition.label=§jTiempo total en segundos \n §jDuración de toda la animación
+menu.keyframes.default_name=§eKeyframe %s \n §jNombre predeterminado del fotograma
+
+menu.main.button.set_keyframe=§2Definir Keyframe \n §jAñadir posición actual de la cámara
+menu.main.button.manage_keyframes=§2Gestionar Keyframes \n §jVer y editar fotogramas creados
+menu.main.button.manage_timelines=§2Gestionar Timelines \n §jAbrir lista de timelines guardadas
+menu.main.button.start=§2Iniciar \n §jEjecutar la animación de la cámara
+menu.keyframes.button.save_new=§2Guardar Nueva Timeline \n §jGrabar la secuencia actual
+menu.keyframes.button.edit_all=§2Cambiar Todos \n §jAplicar configuraciones a todos los fotogramas
+ui.view.button.load=§2Cargar \n §jActivar esta timeline
+ui.edit.button.submit=§2Guardar \n §jAplicar cambios en el keyframe
+
+menu.main.button.delete_last=§cEliminar Último Fotograma \n §jDeshacer la última acción
+ui.view.button.delete=§cEliminar \n §jBorrar esta timeline para siempre
+ui.edit.redo.label=§c¿Regrabar? Marca и guarda. \n §jActualizar posición al lugar actual
+ui.edit.delete.label=§c¿Eliminar? Marca и guarda. \n §jEliminar este fotograma de la timeline
+ui.edit_all.reset.label=§4¿Eliminar todos? \n §jLimpiar la timeline completa
+
+sys.msg.success.generic=§9[Play Mod] §a¡Hecho con éxito!
+sys.msg.success.keyframe_set=§9[Play Mod] §a¡Keyframe definido con éxito!
+sys.msg.success.keyframe_updated=§9[Play Mod] §a¡Keyframe actualizado!
+sys.msg.success.keyframe_deleted=§9[Play Mod] §a¡Keyframe eliminado!
+sys.msg.success.frame_removed=§9[Play Mod] §a¡Último keyframe eliminado!
+sys.msg.success.timeline_created=§9[Play Mod] §a¡Timeline creada con éxito!
+sys.msg.success.timeline_deleted=§9[Play Mod] §a¡Timeline "%s" eliminada con éxito!
+sys.error.empty_name=§9[Play Mod] §c¡El nombre no puede estar vacío!
+sys.error.exists=§9[Play Mod] §c¡Esta timeline ya existe!
+sys.error.dimension=§9[Play Mod] §c¡Error: El Keyframe %s está en otra dimensión!
+sys.error.limit=§9[Play Mod] §c¡Límite de keyframes alcanzado!
+sys.error.not_found=§9[Play Mod] §c¡Timeline no encontrada!
+sys.error.no_keyframes=§9[Play Mod] §c¡Timeline sin keyframes!
+sys.error.invalid_index=§9[Play Mod] §c¡El Keyframe %s no existe!
+sys.error.multiple_actions=§9[Play Mod] §c¡Marca solo una opción (Regrabar o Eliminar) a la vez!
+sys.error.no_timelines=§9[Play Mod] §c¡Aún no tienes ninguna timeline guardada!

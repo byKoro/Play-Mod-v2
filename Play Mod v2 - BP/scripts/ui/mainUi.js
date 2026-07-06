@@ -25,20 +25,23 @@ export function main_UI(player) {
       },
       {
         text: Tools.t("menu.main.button.manage_keyframes"),
-        icon: "textures/ui/play_mod/conf_keyframe.png",
+        icon: "textures/ui/play_mod/gerir_keyframes.png",
         action: () => listKeyframe_UI(player),
       },
       {
         text: Tools.t("menu.main.button.manage_timelines"),
+        icon: "textures/ui/play_mod/gerir_timelines.png",
         action: () => listTimelinesUi(player),
       },
       {
         text: Tools.t("menu.main.button.delete_last"),
+        icon: "textures/ui/play_mod/del_last_keyframe.png",
         action: () => delLastKeyframe(player),
       },
       // "Iniciar" ainda será implementado depois — mantido como está por enquanto.
       {
         text: Tools.t("menu.main.button.start"),
+        icon: "textures/ui/play_mod/play.png",
         action: () => iniciar(player),
       },
     ];

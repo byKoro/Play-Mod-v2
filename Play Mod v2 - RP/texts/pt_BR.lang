@@ -1,37 +1,37 @@
 pack.name=Play Mod v.2 BP
 pack.description=Sistema de Timeline e Keyframes para câmeras
 
-menu.main.title=§6Timeline atual: %s \n §7Menu de controle principal
-menu.keyframes.title.active=§6Timeline atual: %s \n §7Lista de frames da linha selecionada
-menu.keyframes.title.none=§eSem Timeline Ativa \n §7Selecione ou crie uma nova linha
-menu.timelines.title=§6Timelines Salvas \n §7Suas animações gravadas
-ui.view.title=§6Timeline: %s \n §7Visualizar parâmetros
-ui.save.title=§6Exportar Timeline \n §7Salvar em um arquivo
-ui.edit.title=§6Editar Keyframe %s \n §7Modificar opções do frame
-ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §7Editor em massa
+menu.main.title=§6Timeline: %s 
+menu.keyframes.title.active=§6Timeline: %s
+menu.keyframes.title.none=§eSem Timeline Ativa \n §jSelecione ou crie uma nova linha
+menu.timelines.title=§6Timelines Salvas \n §jSuas animações gravadas
+ui.view.title=§6Timeline: %s \n §jVisualizar parâmetros
+ui.save.title=§6Exportar Timeline \n §jSalvar em um arquivo
+ui.edit.title=§6Editar Keyframe %s \n §jModificar opções do frame
+ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §jEditor em massa
 
-ui.save.field.label=§7Salvar nome da timeline \n §7Defina o nome para exportar
-ui.save.field.placeholder=§7Escreva o nome... \n §7Use texto sem caracteres especiais
-ui.edit.rename.label=§7Nomeie o keyframe \n §7Mudar o nome deste frame específico
-ui.edit.pos.label=§7Ajuste fino de posição \n §7Coordenadas XYZ da câmera
-ui.edit.rot.label=§7Ajuste fino de rotação \n §7Ângulos de inclinação e rotação
-ui.edit_all.transition.label=§7Tempo total em segundos \n §7Duração de toda a animação
-menu.keyframes.default_name=§7Keyframe %s \n §7Nome padrão do frame
+ui.save.field.label=§7Salvar nome da timeline \n §jDefina o nome para exportar
+ui.save.field.placeholder=§7Escreva o nome... \n §jUse texto sem caracteres especiais
+ui.edit.rename.label=§7Nomeie o keyframe \n §jMudar o nome deste frame específico
+ui.edit.pos.label=§7Ajuste fino de posição \n §jCoordenadas XYZ da câmera
+ui.edit.rot.label=§7Ajuste fino de rotação \n §jÂngulos de inclinação e rotação
+ui.edit_all.transition.label=§7Tempo total em segundos \n §jDuração de toda a animação
+menu.keyframes.default_name=§eKeyframe %s \n §jNome padrão do frame
 
-menu.main.button.set_keyframe=§2Definir Keyframe \n §7Adicionar posição atual da câmera
-menu.main.button.manage_keyframes=§2Gerenciar Keyframes \n §7Ver e editar frames criados
-menu.main.button.manage_timelines=§2Gerenciar Timelines \n §7Abrir lista de timelines salvas
-menu.main.button.start=§2Iniciar \n §7Executar a animação da câmera
-menu.keyframes.button.save_new=§2Salvar Nova Timeline \n §7Gravar a sequência atual
-menu.keyframes.button.edit_all=§2Alterar Todos \n §7Aplicar configurações a todos os frames
-ui.view.button.load=§2Carregar \n §7Tornar esta timeline ativa
-ui.edit.button.submit=§2Salvar \n §7Aplicar alterações no keyframe
+menu.main.button.set_keyframe=§2Definir Keyframe \n §jCriar keyframe da câmera
+menu.main.button.manage_keyframes=§2Gerenciar Keyframes \n §jVer e editar frames criados
+menu.main.button.manage_timelines=§2Gerenciar Timelines \n §jAbrir lista de timelines salvas
+menu.main.button.start=§2Iniciar \n §jExecutar a animação da câmera
+menu.keyframes.button.save_new=§2Salvar Nova Timeline \n §jGravar a sequência atual
+menu.keyframes.button.edit_all=§2Alterar Todos \n §jAplicar configurações a todos os frames
+ui.view.button.load=§2Carregar \n §jTornar esta timeline ativa
+ui.edit.button.submit=§2Salvar \n §jAplicar alterações no keyframe
 
-menu.main.button.delete_last=§cDeletar Último Frame \n §7Desfazer a última ação
-ui.view.button.delete=§cDeletar \n §7Apagar esta timeline para sempre
-ui.edit.redo.label=§cRegravar? Marque e salve. \n §7Atualizar posição para o local atual
-ui.edit.delete.label=§cDeletar? Marque e salve. \n §7Remover este frame da timeline
-ui.edit_all.reset.label=§4Deletar todos? \n §7Limpar a timeline inteira
+menu.main.button.delete_last=§cDeletar Último Frame \n §jDesfazer a última ação
+ui.view.button.delete=§cDeletar \n §jApagar esta timeline para sempre
+ui.edit.redo.label=§cRegravar? Marque e salve. \n §jAtualizar posição para o local atual
+ui.edit.delete.label=§cDeletar? Marque e salve. \n §jRemover este frame da timeline
+ui.edit_all.reset.label=§4Deletar todos? \n §jLimpar a timeline inteira
 
 sys.msg.success.generic=§9[Play Mod] §aFeito com sucesso!
 sys.msg.success.keyframe_set=§9[Play Mod] §aKeyframe definido com sucesso!

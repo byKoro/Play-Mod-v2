@@ -1,37 +1,37 @@
 pack.name=Play Mod v.2 RP
 pack.description=
 
-menu.main.title=§6Current Timeline: %s \n §7Main control menu
-menu.keyframes.title.active=§6Current Timeline: %s \n §7List of keyframes in this timeline
-menu.keyframes.title.none=§eNo Active Timeline \n §7Select or create a new timeline
-menu.timelines.title=§6Saved Timelines \n §7Your recorded animations
-ui.view.title=§6Timeline: %s \n §7View parameters
-ui.save.title=§6Export Timeline \n §7Save to file
-ui.edit.title=§6Edit Keyframe %s \n §7Modify keyframe options
-ui.edit_all.title=§6Change All Keyframes: %s \n §7Bulk editor
+menu.main.title=§6Timeline: %s 
+menu.keyframes.title.active=§6Timeline: %s
+menu.keyframes.title.none=§eNo Active Timeline \n §jSelect or create a new timeline
+menu.timelines.title=§6Saved Timelines \n §jYour recorded animations
+ui.view.title=§6Timeline: %s \n §jView parameters
+ui.save.title=§6Export Timeline \n §jSave to file
+ui.edit.title=§6Edit Keyframe %s \n §jModify keyframe options
+ui.edit_all.title=§6Change All Keyframes: %s \n §jBulk editor
 
-ui.save.field.label=§7Save timeline name \n §7Set a name for export
-ui.save.field.placeholder=§7Type the name... \n §7Use text without special characters
-ui.edit.rename.label=§7Name the keyframe \n §7Change the name of this keyframe
-ui.edit.pos.label=§7Fine-tune position \n §7XYZ camera coordinates
-ui.edit.rot.label=§7Fine-tune rotation \n §7Pitch and yaw rotation angles
-ui.edit_all.transition.label=§7Total time in seconds \n §7Duration of the whole animation
-menu.keyframes.default_name=§7Keyframe %s \n §7Default keyframe name
+ui.save.field.label=§jSave timeline name \n §jSet a name for export
+ui.save.field.placeholder=§jType the name... \n §jUse text without special characters
+ui.edit.rename.label=§jName the keyframe \n §jChange the name of this keyframe
+ui.edit.pos.label=§jFine-tune position \n §jXYZ camera coordinates
+ui.edit.rot.label=§jFine-tune rotation \n §jPitch and yaw rotation angles
+ui.edit_all.transition.label=§jTotal time in seconds \n §jDuration of the whole animation
+menu.keyframes.default_name=§eKeyframe %s \n §jDefault keyframe name
 
-menu.main.button.set_keyframe=§2Set Keyframe \n §7Add current camera position
-menu.main.button.manage_keyframes=§2Manage Keyframes \n §7View and edit created keyframes
-menu.main.button.manage_timelines=§2Manage Timelines \n §7Open your saved timelines list
-menu.main.button.start=§2Start \n §7Play the camera animation
-menu.keyframes.button.save_new=§2Save New Timeline \n §7Record current animation sequence
-menu.keyframes.button.edit_all=§2Change All \n §7Apply settings to all keyframes
-ui.view.button.load=§2Load \n §7Set this timeline as active
-ui.edit.button.submit=§2Save \n §7Apply changes to keyframe
+menu.main.button.set_keyframe=§2Set Keyframe \n §jAdd current camera position
+menu.main.button.manage_keyframes=§2Manage Keyframes \n §jView and edit created keyframes
+menu.main.button.manage_timelines=§2Manage Timelines \n §jOpen your saved timelines list
+menu.main.button.start=§2Start \n §jPlay the camera animation
+menu.keyframes.button.save_new=§2Save New Timeline \n §jRecord current animation sequence
+menu.keyframes.button.edit_all=§2Change All \n §jApply settings to all keyframes
+ui.view.button.load=§2Load \n §jSet this timeline as active
+ui.edit.button.submit=§2Save \n §jApply changes to keyframe
 
-menu.main.button.delete_last=§cDelete Last Frame \n §7Undo the last action
-ui.view.button.delete=§cDelete \n §7Permanently erase this timeline
-ui.edit.redo.label=§cRe-record? Check and save. \n §7Update position to current location
-ui.edit.delete.label=§cDelete? Check and save. \n §7Remove this keyframe from timeline
-ui.edit_all.reset.label=§4Delete all? \n §7Wipe the entire timeline
+menu.main.button.delete_last=§cDelete Last Frame \n §jUndo the last action
+ui.view.button.delete=§cDelete \n §jPermanently erase this timeline
+ui.edit.redo.label=§cRe-record? Check and save. \n §jUpdate position to current location
+ui.edit.delete.label=§cDelete? Check and save. \n §jRemove this keyframe from timeline
+ui.edit_all.reset.label=§4Delete all? \n §jWipe the entire timeline
 
 sys.msg.success.generic=§9[Play Mod] §aDone successfully!
 sys.msg.success.keyframe_set=§9[Play Mod] §aKeyframe set successfully!
