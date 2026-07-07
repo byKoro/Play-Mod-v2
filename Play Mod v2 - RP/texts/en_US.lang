@@ -1,7 +1,7 @@
 pack.name=Play Mod v.2 RP
 pack.description=
 
-menu.main.title=§6Timeline: %s 
+menu.main.title=§6§0§0§0§6Timeline: %s 
 menu.keyframes.title.active=§6Timeline: %s
 menu.keyframes.title.none=§eNo Active Timeline \n §jSelect or create a new timeline
 menu.timelines.title=§6Saved Timelines \n §jYour recorded animations
@@ -16,6 +16,7 @@ ui.edit.rename.label=§jName the keyframe \n §jChange the name of this keyframe
 ui.edit.pos.label=§jFine-tune position \n §jXYZ camera coordinates
 ui.edit.rot.label=§jFine-tune rotation \n §jPitch and yaw rotation angles
 ui.edit_all.transition.label=§jTotal time in seconds \n §jDuration of the whole animation
+ui.edit_all.markers.label=§2Show markers? \n §jDisplays an entity at each saved keyframe
 menu.keyframes.default_name=§eKeyframe %s \n §jDefault keyframe name
 
 menu.main.button.set_keyframe=§2Set Keyframe \n §jAdd current camera position
@@ -26,7 +27,6 @@ menu.main.button.start=§2Start \n §jPlay the camera animation
 menu.play_options.title=§6Playback Options \n §jSet how the animation will play
 menu.play_options.button.loop=§2Loop \n §jRepeat the animation endlessly
 menu.play_options.button.camera_relative=§2Camera Relative \n §jMove relative to the camera
-menu.play_options.button.camera_relative_strafe=§2Camera Relative (Strafe) \n §jMove relative to the camera, keep facing
 menu.play_options.button.start=§2Start \n §jPlay the camera animation
 menu.keyframes.button.save_new=§2Save New Timeline \n §jRecord current animation sequence
 menu.keyframes.button.edit_all=§2Change All \n §jApply settings to all keyframes

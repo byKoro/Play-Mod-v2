@@ -7,13 +7,12 @@ const PLAY_OPTIONS_PROPERTY = "playOptions";
 const CONTROL_SCHEME_COMMANDS = {
   none: "clear",
   camera_relative: "set camera_relative",
-  camera_relative_strafe: "set camera_relative_strafe",
 };
 
 function defaultPlayOptions() {
   return {
     loop: false,
-    controlScheme: "none", // "none" | "camera_relative" | "camera_relative_strafe"
+    controlScheme: "none", // "none" | "camera_relative"
   };
 }
 

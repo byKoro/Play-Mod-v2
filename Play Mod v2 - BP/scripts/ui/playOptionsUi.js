@@ -36,18 +36,6 @@ export function playOptionsUi(player) {
         },
       },
       {
-        text: Tools.formatToggle(
-          "menu.play_options.button.camera_relative_strafe",
-          options.controlScheme === "camera_relative_strafe",
-        ),
-        icon: "textures/ui/play_mod/camera_relative_strafe.png",
-        action: () => {
-          toggleControlScheme(player, "camera_relative_strafe");
-          Tools.playSuccess(player);
-          playOptionsUi(player);
-        },
-      },
-      {
         text: Tools.t("menu.play_options.button.start"),
         icon: "textures/ui/play_mod/play.png",
         action: () => iniciar(player),

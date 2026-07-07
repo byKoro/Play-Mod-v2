@@ -1,7 +1,7 @@
 pack.name=Play Mod v.2 BP
 pack.description=Sistema de Timeline y Keyframes para cámaras
 
-menu.main.title=§6Timeline: %s
+menu.main.title=§6§0§0§0§6Timeline: %s
 menu.keyframes.title.active=§6Timeline: %s
 menu.keyframes.title.none=§eSin Timeline Activa \n §jSelecciona o crea una nueva línea
 menu.timelines.title=§6Timelines Guardadas \n §jTus animaciones grabadas
@@ -16,6 +16,7 @@ ui.edit.rename.label=§jNombra el keyframe \n §jCambiar el nombre de este fotog
 ui.edit.pos.label=§jAjuste fino de posición \n §jCoordenadas XYZ de la cámara
 ui.edit.rot.label=§jAjuste fino de rotación \n §jÁngulos de inclinación y rotación
 ui.edit_all.transition.label=§jTiempo total en segundos \n §jDuración de toda la animación
+ui.edit_all.markers.label=§2¿Mostrar marcadores? \n §jMuestra una entidad en cada keyframe guardado
 menu.keyframes.default_name=§eKeyframe %s \n §jNombre predeterminado del fotograma
 
 menu.main.button.set_keyframe=§2Definir Keyframe \n §jAñadir posición actual de la cámara
@@ -26,7 +27,6 @@ menu.main.button.start=§2Iniciar \n §jEjecutar la animación de la cámara
 menu.play_options.title=§6Opciones de Reproducción \n §jDefine cómo se reproducirá la animación
 menu.play_options.button.loop=§2Repetir (Loop) \n §jRepite la animación sin parar
 menu.play_options.button.camera_relative=§2Cámara Relativa \n §jMoverse en relación a la cámara
-menu.play_options.button.camera_relative_strafe=§2Cámara Relativa (Strafe) \n §jMoverse en relación a la cámara, manteniendo la mirada
 menu.play_options.button.start=§2Iniciar \n §jEjecutar la animación de la cámara
 menu.keyframes.button.save_new=§2Guardar Nueva Timeline \n §jGrabar la secuencia actual
 menu.keyframes.button.edit_all=§2Cambiar Todos \n §jAplicar configuraciones a todos los fotogramas

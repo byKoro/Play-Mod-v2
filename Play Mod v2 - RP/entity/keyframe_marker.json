@@ -1,0 +1,16 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "playmod:keyframe_marker",
+      "materials": { "default": "entity_alphatest" },
+      "textures": {
+        "default": "textures/entity/playmod/keyframe_marker"
+      },
+      "geometry": { "default": "geometry.playmod.keyframe_marker" },
+      "render_controllers": [
+        "controller.render.playmod.keyframe_marker"
+      ]
+    }
+  }
+}

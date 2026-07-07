@@ -1,6 +1,10 @@
 import { world } from "@minecraft/server";
 import { Tools } from "../utils/tools";
 import { saveTimelineUi } from "../ui/saveTimelineUi";
+import {
+  syncKeyframeMarkers,
+  resetKeyframeMarkersOnJoin,
+} from "./keyframeMarkerService.js";
 
 export function createTimeline(player) {
   return {
@@ -37,6 +41,7 @@ export function saveTimeline(player, timeline) {
 export function resetTimeline(player, value) {
   if (value) {
     saveTimeline(player, createTimeline(player));
+    syncKeyframeMarkers(player);
     Tools.playSuccess(player);
     player.sendMessage(Tools.t("sys.msg.success.generic"));
   }
@@ -52,6 +57,8 @@ export function registerTimelineEvents() {
       Tools.setDynamicProperty(player, "dinamicText", "");
       saveTimeline(player, createTimeline(player));
     }
+
+    resetKeyframeMarkersOnJoin(player);
   });
 }
 
@@ -157,6 +164,7 @@ export function setCurrentTimeline(player, timeline) {
   if (!timelines.includes(timeline)) return false;
 
   Tools.setDynamicProperty(player, "currentTimeline", timeline);
+  syncKeyframeMarkers(player);
   return true;
 }
 
@@ -177,6 +185,8 @@ export function deleteTimeline(player, timelineName) {
   if (atual === timelineName) {
     Tools.setDynamicProperty(player, "currentTimeline", "");
   }
+
+  syncKeyframeMarkers(player);
 
   Tools.playSuccess(player);
   player.sendMessage(

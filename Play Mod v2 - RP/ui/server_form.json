@@ -1,0 +1,98 @@
+{
+  "namespace": "server_form",
+
+  "main_screen_content": {
+    "modifications": [
+      {
+        "array_name": "controls",
+        "operation": "insert_back",
+        "value": [
+          {
+            "playmod_credits_factory": {
+              "type": "panel",
+              "factory": {
+                "name": "server_form_factory",
+                "control_ids": {
+                  "long_form": "@server_form.our_credits_panel"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+  "our_credits_panel": {
+    "type": "panel",
+    "size": [96, 140],
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "offset": [165, 0],
+    "bindings": [{ "binding_name": "#title_text" }],
+    "controls": [
+      {
+        "credits_content": {
+          "type": "panel",
+          "size": ["100%", "100%"],
+          "$title_needs_to_contain": "§0§0§0",
+          "bindings": [
+            {
+              "binding_type": "view",
+              "source_control_name": "our_credits_panel",
+              "source_property_name": "(not ((#title_text - $title_needs_to_contain) = #title_text))",
+              "target_property_name": "#visible"
+            }
+          ],
+          "controls": [
+            {
+              "background": {
+                "type": "image",
+                "texture": "textures/ui/Black",
+                "size": ["100%", "100%"],
+                "alpha": 0.55
+              }
+            },
+            {
+              "inner": {
+                "type": "stack_panel",
+                "orientation": "vertical",
+                "size": ["100% - 12px", "100%c"],
+                "offset": [0, 8],
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle",
+                "controls": [
+                  {
+                    "creator_image": {
+                      "type": "image",
+                      "texture": "textures/ui/play_mod/credits_image",
+                      "size": [48, 48],
+                      "anchor_from": "top_middle",
+                      "anchor_to": "top_middle"
+                    }
+                  },
+                  {
+                    "spacer": {
+                      "type": "panel",
+                      "size": ["100%", 6]
+                    }
+                  },
+                  {
+                    "creator_label": {
+                      "type": "label",
+                      "text": "§7Criado por §f§lKoro",
+                      "size": ["100%", "default"],
+                      "text_alignment": "center",
+                      "anchor_from": "top_middle",
+                      "anchor_to": "top_middle"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

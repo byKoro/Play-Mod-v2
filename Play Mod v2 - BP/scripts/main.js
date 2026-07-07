@@ -7,6 +7,7 @@ import {
   resetStalePlaybackState,
   cleanupPlaybackOnLeave,
 } from "./services/playCamera.js";
+import { startMarkerDriftGuard } from "./services/keyframeMarkerService.js";
 import {
   flagActivatorReturn,
   resolvePendingActivatorReturn,
@@ -71,3 +72,4 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
 });
 
 registerTimelineEvents();
+startMarkerDriftGuard();

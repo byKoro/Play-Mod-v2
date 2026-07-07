@@ -1,0 +1,18 @@
+{
+  "format_version": "1.10.0",
+  "animations": {
+    "animation.playmod.keyframe_marker.orient": {
+      "loop": true,
+      "bones": {
+        // O engine já aplica o yaw (query.body_y_rotation) automaticamente
+        // na orientação da entidade inteira — não precisamos repetir isso
+        // aqui. Só o pitch (vertical) precisa ser vinculado manualmente,
+        // porque por padrão nenhuma entidade genérica aplica isso ao
+        // corpo (só a bones "head" com look-at, que não é o nosso caso).
+        "cube": {
+          "rotation": ["query.body_x_rotation", 0, 0]
+        }
+      }
+    }
+  }
+}

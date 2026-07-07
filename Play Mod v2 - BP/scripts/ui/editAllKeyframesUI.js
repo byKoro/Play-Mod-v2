@@ -5,6 +5,8 @@ import {
   getMaxTime,
   resetTimeline,
   setMaxTimeline,
+  areMarkersVisible,
+  setKeyframeMarkersVisible,
 } from "../services/index";
 import { listKeyframe_UI } from "./listKeyframeUi";
 import { Tools } from "../utils/tools";
@@ -19,6 +21,9 @@ export function editAllKeyframes(player) {
     form.slider(Tools.t("ui.edit_all.transition.label"), min, max, {
       defaultValue: getMaxTime(player),
     });
+    form.toggle(Tools.t("ui.edit_all.markers.label"), {
+      defaultValue: areMarkersVisible(player),
+    });
     form.toggle(Tools.t("ui.edit_all.reset.label"));
 
     form.show(player).then((response) => {
@@ -26,7 +31,10 @@ export function editAllKeyframes(player) {
 
       const values = response.formValues;
       const currentMaxTime = values[0];
-      const delAllKeyframes = values[1];
+      const showMarkers = values[1];
+      const delAllKeyframes = values[2];
+
+      setKeyframeMarkersVisible(player, showMarkers);
 
       if (resetTimeline(player, delAllKeyframes));
       setMaxTimeline(player, currentMaxTime);

@@ -2,6 +2,10 @@ import { system, EasingType, TicksPerSecond } from "@minecraft/server";
 import { getCurrentTimeline } from "../services/index.js";
 import { getPlayOptions, applyControlScheme } from "../services/playOptionsService.js";
 import { lockActivatorItem, unlockActivatorItem } from "./itemGuardService.js";
+import {
+  hideKeyframeMarkers,
+  restoreKeyframeMarkersIfEnabled,
+} from "./keyframeMarkerService.js";
 import { Tools } from "../utils/index.js";
 
 // Tag aplicada ao jogador enquanto a animação está rodando (tocando ou
@@ -342,6 +346,7 @@ export function iniciar(player) {
 
   player.addTag(PLAYING_TAG);
   lockActivatorItem(player);
+  hideKeyframeMarkers(player);
 
   // Apenas uma keyframe: não há caminho pra suavizar, só espera e limpa.
   if (keyframes.length === 1) {
@@ -427,6 +432,7 @@ export function stopAnimation(player) {
   activePlaybacks.delete(player.id);
 
   rawReset(player);
+  restoreKeyframeMarkersIfEnabled(player);
 }
 
 /**

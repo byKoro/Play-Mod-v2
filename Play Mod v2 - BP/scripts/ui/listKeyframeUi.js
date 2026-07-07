@@ -14,10 +14,12 @@ export function listKeyframe_UI(player) {
     const buttons = [
       {
         text: Tools.t("menu.keyframes.button.save_new"),
+        icon: "textures/ui/play_mod/save_timeline.png",
         action: () => saveTimelineUi(player),
       },
       {
         text: Tools.t("menu.keyframes.button.edit_all"),
+        icon: "textures/ui/play_mod/edit_all.png",
         action: () => editAllKeyframes(player),
       },
     ];
@@ -42,7 +44,7 @@ export function listKeyframe_UI(player) {
         : Tools.t("menu.keyframes.title.none"),
     );
 
-    buttons.forEach(({ text }) => form.button(text));
+    buttons.forEach(({ text, icon }) => form.button(text, icon));
 
     try {
       const response = await form.show(player);

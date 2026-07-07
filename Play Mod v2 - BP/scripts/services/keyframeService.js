@@ -6,6 +6,7 @@ import {
   saveTimeline,
   validateTimelineDimension,
 } from "./timelineService";
+import { syncKeyframeMarkers } from "./keyframeMarkerService.js";
 import { editKeyframe_UI } from "../ui/index";
 
 export function createKeyframe(player) {
@@ -26,6 +27,7 @@ export function addKeyframe(player, keyframe) {
 
   timeline.keyframes.push(keyframe);
   saveTimeline(player, timeline);
+  syncKeyframeMarkers(player);
 
   Tools.playSuccess(player);
   player.sendMessage(Tools.t("sys.msg.success.keyframe_set"));
@@ -93,6 +95,7 @@ export function delKeyframe(player, keyframeIndex, value) {
 
     timeline.keyframes.splice(keyframeIndex, 1);
     saveTimeline(player, timeline);
+    syncKeyframeMarkers(player);
 
     Tools.playSuccess(player);
     player.sendMessage(Tools.t("sys.msg.success.keyframe_deleted"));
@@ -134,6 +137,7 @@ export function setKeyframePosition(player, index, text) {
   };
 
   saveTimeline(player, timeline);
+  syncKeyframeMarkers(player);
   return true;
 }
 
@@ -159,6 +163,7 @@ export function delLastKeyframe(player) {
   if (timeline && timeline.keyframes.length > 0) {
     timeline.keyframes.pop();
     saveTimeline(player, timeline);
+    syncKeyframeMarkers(player);
     Tools.playSuccess(player);
     player.sendMessage(Tools.t("sys.msg.success.frame_removed"));
   } else {
@@ -189,6 +194,7 @@ export function setKeyframe(player) {
 
     timeline.keyframes[keyframeIndex] = keyframe;
     saveTimeline(player, timeline);
+    syncKeyframeMarkers(player);
 
     player.removeTag("editKeyframe");
 
