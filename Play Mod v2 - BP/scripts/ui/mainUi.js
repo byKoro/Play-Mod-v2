@@ -6,15 +6,12 @@ import {
   getKeyframe,
   delLastKeyframe,
   setKeyframe,
-} from "../services/keyframeService";
-import { Tools } from "../utils/index";
-import { listKeyframe_UI } from "./listKeyframeUi";
-import {
-  getCurrentTimeline,
-  iniciar,
-  validateTimelineDimension,
-} from "../services/index";
-import { listTimelinesUi } from "./listTimelinesUi";
+} from "../services/keyframeService.js";
+import { Tools } from "../utils/index.js";
+import { listKeyframe_UI } from "./listKeyframeUi.js";
+import { getCurrentTimeline } from "../services/index.js";
+import { listTimelinesUi } from "./listTimelinesUi.js";
+import { playOptionsUi } from "./playOptionsUi.js";
 
 export function main_UI(player) {
   system.run(async () => {
@@ -39,11 +36,10 @@ export function main_UI(player) {
         icon: "textures/ui/play_mod/del_last_keyframe.png",
         action: () => delLastKeyframe(player),
       },
-      // "Iniciar" ainda será implementado depois — mantido como está por enquanto.
       {
         text: Tools.t("menu.main.button.start"),
         icon: "textures/ui/play_mod/play.png",
-        action: () => iniciar(player),
+        action: () => playOptionsUi(player),
       },
     ];
 

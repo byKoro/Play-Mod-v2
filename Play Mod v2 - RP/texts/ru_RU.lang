@@ -22,6 +22,12 @@ menu.main.button.set_keyframe=§2Задать ключевой кадр \n §jД
 menu.main.button.manage_keyframes=§2Управление кадрами \n §jПосмотреть и изменить созданные кадры
 menu.main.button.manage_timelines=§2Управление таймлайнами \n §jПосмотреть список ваших таймлайнов
 menu.main.button.start=§2Начать \n §jЗапустить воспроизведение анимации
+
+menu.play_options.title=§6Настройки воспроизведения \n §jНастройте, как будет проигрываться анимация
+menu.play_options.button.loop=§2Повтор (Loop) \n §jБесконечно повторять анимацию
+menu.play_options.button.camera_relative=§2Относительно камеры \n §jДвижение относительно камеры
+menu.play_options.button.camera_relative_strafe=§2Относительно камеры (Strafe) \n §jДвижение относительно камеры с сохранением взгляда
+menu.play_options.button.start=§2Начать \n §jЗапустить воспроизведение анимации
 menu.keyframes.button.save_new=§2Сохранить новый таймлайн \n §jЗаписать текущую анимацию
 menu.keyframes.button.edit_all=§2Изменить всё \n §jПрименить настройки ко всем кадрам
 ui.view.button.load=§2Загрузить \n §jСделать этот таймлайн активным
@@ -48,3 +54,11 @@ sys.error.no_keyframes=§cВ таймлайне нет кадров!
 sys.error.invalid_index=§cКадр %s не существует!
 sys.error.multiple_actions=§cОтметьте только один вариант (Перезаписать или Удалить) за раз!
 sys.error.no_timelines=§cУ вас пока нет сохранённых таймлайнов!
+
+ui.redo.keyframe.button=§2Перезаписать кадр \n §jЗаново записать этот кадр
+ui.cancel.button=§cОтменить редактирование \n §jВыйти из режима редактирования
+
+menu.play_control.title=§6Управление воспроизведением \n §jУправляйте текущей анимацией
+menu.play_control.button.pause=§2Пауза \n §jЗаморозить камеру на текущей позиции
+menu.play_control.button.resume=§2Продолжить \n §jПродолжить анимацию с места остановки
+menu.play_control.button.stop=§cОстановить \n §jЗавершить анимацию и вернуть управление

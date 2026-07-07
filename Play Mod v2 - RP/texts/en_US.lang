@@ -22,6 +22,12 @@ menu.main.button.set_keyframe=§2Set Keyframe \n §jAdd current camera position
 menu.main.button.manage_keyframes=§2Manage Keyframes \n §jView and edit created keyframes
 menu.main.button.manage_timelines=§2Manage Timelines \n §jOpen your saved timelines list
 menu.main.button.start=§2Start \n §jPlay the camera animation
+
+menu.play_options.title=§6Playback Options \n §jSet how the animation will play
+menu.play_options.button.loop=§2Loop \n §jRepeat the animation endlessly
+menu.play_options.button.camera_relative=§2Camera Relative \n §jMove relative to the camera
+menu.play_options.button.camera_relative_strafe=§2Camera Relative (Strafe) \n §jMove relative to the camera, keep facing
+menu.play_options.button.start=§2Start \n §jPlay the camera animation
 menu.keyframes.button.save_new=§2Save New Timeline \n §jRecord current animation sequence
 menu.keyframes.button.edit_all=§2Change All \n §jApply settings to all keyframes
 ui.view.button.load=§2Load \n §jSet this timeline as active
@@ -49,3 +55,11 @@ sys.error.no_keyframes=§9[Play Mod] §cTimeline without keyframes!
 sys.error.invalid_index=§9[Play Mod] §cKeyframe %s does not exist!
 sys.error.multiple_actions=§9[Play Mod] §cCheck only one option (Re-record or Delete) at a time!
 sys.error.no_timelines=§9[Play Mod] §cYou don't have any saved timelines yet!
+
+ui.redo.keyframe.button=§2Reposition keyframe \n §jRe-record this keyframe
+ui.cancel.button=§cCancel edit \n §jExit edit mode
+
+menu.play_control.title=§6Playback Control \n §jManage the animation in progress
+menu.play_control.button.pause=§2Pause \n §jFreeze the camera at its current position
+menu.play_control.button.resume=§2Resume \n §jContinue the animation from where it stopped
+menu.play_control.button.stop=§cStop \n §jEnd the animation and release control

@@ -53,6 +53,19 @@ export class Tools {
     return { translate: key, with: withArgs.map(String) };
   }
 
+  /**
+   * Monta o texto de um botão de "toggle" simulado em ActionFormData
+   * (que, ao contrário do ModalFormData, não tem toggle nativo).
+   * Prefixa com um indicador visual de marcado/desmarcado mantendo
+   * a tradução do texto original.
+   * @param {string} key chave de tradução do texto do botão
+   * @param {boolean} checked se a opção está marcada
+   */
+  static formatToggle(key, checked) {
+    const prefix = checked ? "§a§l> §r" : "§c§l> §r";
+    return { rawtext: [{ text: prefix }, { translate: key }] };
+  }
+
   /** Som padrão de erro (pedido: note.bass) */
   static playError(player) {
     player.dimension.playSound("note.bass", player.location);

@@ -4,8 +4,8 @@ pack.description=Sistema de Timeline e Keyframes para câmeras
 menu.main.title=§6Timeline: %s 
 menu.keyframes.title.active=§6Timeline: %s
 menu.keyframes.title.none=§eSem Timeline Ativa \n §jSelecione ou crie uma nova linha
-menu.timelines.title=§6Timelines Salvas \n §jSuas animações gravadas
-ui.view.title=§6Timeline: %s \n §jVisualizar parâmetros
+menu.timelines.title=§6Timelines Salvas
+ui.view.title=§6Timeline: %s
 ui.save.title=§6Exportar Timeline \n §jSalvar em um arquivo
 ui.edit.title=§6Editar Keyframe %s \n §jModificar opções do frame
 ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §jEditor em massa
@@ -22,10 +22,16 @@ menu.main.button.set_keyframe=§2Definir Keyframe \n §jCriar keyframe da câmer
 menu.main.button.manage_keyframes=§2Gerenciar Keyframes \n §jVer e editar frames criados
 menu.main.button.manage_timelines=§2Gerenciar Timelines \n §jAbrir lista de timelines salvas
 menu.main.button.start=§2Iniciar \n §jExecutar a animação da câmera
+
+menu.play_options.title=§6Opções de Reprodução \n §jDefina como a animação vai rodar
+menu.play_options.button.loop=§2Repetir (Loop) \n §jRepete a animação sem parar
+menu.play_options.button.camera_relative=§2Câmera Relativa \n §jMove-se em relação à câmera
+menu.play_options.button.camera_relative_strafe=§2Câmera Relativa (Strafe) \n §jMove-se em relação à câmera, mantendo o olhar
+menu.play_options.button.start=§2Iniciar \n §jExecutar a animação da câmera
 menu.keyframes.button.save_new=§2Salvar Nova Timeline \n §jGravar a sequência atual
 menu.keyframes.button.edit_all=§2Alterar Todos \n §jAplicar configurações a todos os frames
 ui.view.button.load=§2Carregar \n §jTornar esta timeline ativa
-ui.edit.button.submit=§2Salvar \n §jAplicar alterações no keyframe
+ui.edit.button.submit=§2Salvar
 
 menu.main.button.delete_last=§cDeletar Último Frame \n §jDesfazer a última ação
 ui.view.button.delete=§cDeletar \n §jApagar esta timeline para sempre
@@ -49,3 +55,11 @@ sys.error.no_keyframes=§9[Play Mod] §cTimeline sem keyframes!
 sys.error.invalid_index=§9[Play Mod] §cKeyframe %s não existe!
 sys.error.multiple_actions=§9[Play Mod] §cMarque apenas uma opção (Regravar ou Deletar) por vez!
 sys.error.no_timelines=§9[Play Mod] §cVocê ainda não tem nenhuma timeline salva!
+
+ui.redo.keyframe.button=§2Reposicionar keyframe\n §jReposiciona o keyframe
+ui.cancel.button=§cCancelar edição \n§jSair do modo edição
+
+menu.play_control.title=§6Controle de Reprodução \n §jGerencie a animação em andamento
+menu.play_control.button.pause=§2Pausar \n §jCongela a câmera na posição atual
+menu.play_control.button.resume=§2Continuar \n §jRetoma a animação de onde parou
+menu.play_control.button.stop=§cParar \n §jEncerra a animação e libera o controle
