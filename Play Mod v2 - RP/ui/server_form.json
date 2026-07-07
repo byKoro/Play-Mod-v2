@@ -23,74 +23,120 @@
     ]
   },
 
-  "our_credits_panel": {
-    "type": "panel",
-    "size": [96, 140],
+  "our_credits_panel@common_dialogs.main_panel_no_buttons": {
+    "$title_panel": "common_dialogs.standard_title_label",
+    "$title_size": ["100% - 15px", 10],
+    "$title_max_size": ["100% - 15px", 10],
+    "$text_name": "",
+    "$title_text_binding_type": "none",
+    "$show_close_button": false,
+    "$child_control": "server_form.our_credits_content",
+    "size": [110, 220],
     "anchor_from": "center",
     "anchor_to": "center",
-    "offset": [165, 0],
-    "bindings": [{ "binding_name": "#title_text" }],
+    "offset": [176, 0],
+    "layer": 2,
+    "bindings": [
+      { "binding_name": "#title_text" },
+      {
+        "binding_type": "view",
+        "source_property_name": "(not ((#title_text - '§0§0§0') = #title_text))",
+        "target_property_name": "#visible"
+      }
+    ]
+  },
+
+  "our_credits_content": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": ["100%", "100%c"],
     "controls": [
       {
-        "credits_content": {
+        "creator_image": {
+          "type": "image",
+          "texture": "textures/ui/play_mod/credits_image.png",
+          "size": ["100%", 48]
+        }
+      },
+      {
+        "spacer_1": { "type": "panel", "size": ["100%", 6] }
+      },
+      {
+        "creator_label": {
+          "type": "label",
+          "text": "§7Made by §f§lKoro",
+          "size": ["100%", "default"],
+          "text_alignment": "center"
+        }
+      },
+      {
+        "spacer_2": { "type": "panel", "size": ["100%", 8] }
+      },
+      {
+        "icon_row_wrapper": {
           "type": "panel",
-          "size": ["100%", "100%"],
-          "$title_needs_to_contain": "§0§0§0",
-          "bindings": [
-            {
-              "binding_type": "view",
-              "source_control_name": "our_credits_panel",
-              "source_property_name": "(not ((#title_text - $title_needs_to_contain) = #title_text))",
-              "target_property_name": "#visible"
-            }
-          ],
+          "size": ["100%", 16],
           "controls": [
             {
-              "background": {
-                "type": "image",
-                "texture": "textures/ui/Black",
-                "size": ["100%", "100%"],
-                "alpha": 0.55
-              }
-            },
-            {
-              "inner": {
+              "icon_row": {
                 "type": "stack_panel",
-                "orientation": "vertical",
-                "size": ["100% - 12px", "100%c"],
-                "offset": [0, 8],
+                "orientation": "horizontal",
+                "size": ["100%c", "100%c"],
                 "anchor_from": "top_middle",
                 "anchor_to": "top_middle",
                 "controls": [
                   {
-                    "creator_image": {
+                    "credits_icon_1": {
                       "type": "image",
-                      "texture": "textures/ui/play_mod/credits_image",
-                      "size": [48, 48],
-                      "anchor_from": "top_middle",
-                      "anchor_to": "top_middle"
+                      "texture": "textures/ui/play_mod/credits_icon_1.png",
+                      "size": [16, 16]
                     }
                   },
                   {
-                    "spacer": {
-                      "type": "panel",
-                      "size": ["100%", 6]
+                    "icon_spacer_1": { "type": "panel", "size": [3, 1] }
+                  },
+                  {
+                    "credits_icon_2": {
+                      "type": "image",
+                      "texture": "textures/ui/play_mod/credits_icon_2",
+                      "size": [16, 16]
                     }
                   },
                   {
-                    "creator_label": {
-                      "type": "label",
-                      "text": "§7Criado por §f§lKoro",
-                      "size": ["100%", "default"],
-                      "text_alignment": "center",
-                      "anchor_from": "top_middle",
-                      "anchor_to": "top_middle"
+                    "icon_spacer_2": { "type": "panel", "size": [3, 1] }
+                  },
+                  {
+                    "credits_icon_3": {
+                      "type": "image",
+                      "texture": "textures/ui/play_mod/credits_icon_3",
+                      "size": [16, 16]
+                    }
+                  },
+                  {
+                    "icon_spacer_2": { "type": "panel", "size": [3, 1] }
+                  },
+                  {
+                    "credits_icon_4": {
+                      "type": "image",
+                      "texture": "textures/ui/play_mod/credits_icon_4",
+                      "size": [16, 16]
                     }
                   }
                 ]
               }
             }
           ]
+        }
+      },
+      {
+        "spacer_3": { "type": "panel", "size": ["100%", 6] }
+      },
+      {
+        "creator_description": {
+          "type": "label",
+          "text": "§7From one creator to other creators",
+          "size": ["100%", "default"],
+          "text_alignment": "center"
         }
       }
     ]

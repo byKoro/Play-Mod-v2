@@ -63,3 +63,5 @@ menu.play_control.title=§6Playback Control \n §jManage the animation in progre
 menu.play_control.button.pause=§2Pause \n §jFreeze the camera at its current position
 menu.play_control.button.resume=§2Resume \n §jContinue the animation from where it stopped
 menu.play_control.button.stop=§cStop \n §jEnd the animation and release control
+
+item.playmod:play_camera=Play Camera

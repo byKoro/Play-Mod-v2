@@ -5,12 +5,10 @@
       "identifier": "playmod:keyframe_marker",
       "materials": { "default": "entity_alphatest" },
       "textures": {
-        "default": "textures/entity/playmod/keyframe_marker"
+        "default": "textures/entity/playmod/keyframe_marker.png"
       },
       "geometry": { "default": "geometry.playmod.keyframe_marker" },
-      "render_controllers": [
-        "controller.render.playmod.keyframe_marker"
-      ]
+      "render_controllers": ["controller.render.playmod.keyframe_marker"]
     }
   }
 }

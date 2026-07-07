@@ -5,4 +5,4 @@
 // for criado. É o único lugar que precisa mudar — o resto do addon
 // (trava de drop, devolução em morte, filtro do itemUse) já usa essa
 // constante e não precisa de nenhum outro ajuste.
-export const ACTIVATOR_ITEM_ID = "minecraft:compass";
+export const ACTIVATOR_ITEM_ID = "playmod:play_camera";

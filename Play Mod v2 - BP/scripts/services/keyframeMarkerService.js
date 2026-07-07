@@ -1,5 +1,6 @@
 import { system, world } from "@minecraft/server";
 import { getTimeline, getCurrentTimeline } from "./timelineService.js";
+import { editKeyframe_UI } from "../ui/index.js";
 import { Tools } from "../utils/index.js";
 
 const MARKER_TYPE_ID = "playmod:keyframe_marker";
@@ -17,6 +18,21 @@ const DIMENSION_PROPERTY = "correctDimension";
 // deslocada e precisa voltar pro lugar certo.
 const DRIFT_TOLERANCE = 0.1;
 
+const ALL_DIMENSIONS = [
+  "minecraft:overworld",
+  "minecraft:nether",
+  "minecraft:the_end",
+];
+
+// Lista em memória de todas as entidades marcadoras vivas nessa sessão
+// (entityId -> { entity, ownerId }). Existe pra evitar ter que varrer
+// as 3 dimensões inteiras (dimension.getEntities) toda vez que
+// precisamos remover ou checar os marcadores — isso é caro e era
+// chamado com bastante frequência (toda edição de keyframe + o guard
+// anti-teleporte 1x/segundo). Com essa lista, essas operações passam a
+// ser O(número de marcadores), sem nenhuma consulta ao mundo.
+const trackedMarkers = new Map();
+
 function getMarkerTag(player) {
   return `playmod_marker_${player.id}`;
 }
@@ -26,20 +42,36 @@ export function areMarkersVisible(player) {
   return Tools.getDynamicProperty(player, VISIBLE_PROPERTY) ?? false;
 }
 
-function removeAllMarkersOf(player) {
+/**
+ * Remoção rápida (só usa a lista em memória) — usada em todo o fluxo
+ * normal (adicionar/editar/deletar keyframe, trocar timeline, etc.).
+ */
+function removeTrackedMarkersOf(player) {
+  for (const [id, info] of trackedMarkers) {
+    if (info.ownerId !== player.id) continue;
+    if (info.entity.isValid) info.entity.remove();
+    trackedMarkers.delete(id);
+  }
+}
+
+/**
+ * Remoção "de verdade" (consulta o mundo nas 3 dimensões) — mais cara,
+ * por isso só é usada no login do jogador, pra pegar marcadores de uma
+ * sessão anterior que a lista em memória não conhece mais (ela é
+ * zerada toda vez que o mundo é recarregado, mas as entidades em si
+ * continuam salvas no mundo).
+ */
+function purgeStaleMarkersOf(player) {
   const tag = getMarkerTag(player);
 
-  for (const dimensionId of [
-    "minecraft:overworld",
-    "minecraft:nether",
-    "minecraft:the_end",
-  ]) {
+  for (const dimensionId of ALL_DIMENSIONS) {
     const dimension = world.getDimension(dimensionId);
     for (const entity of dimension.getEntities({
       type: MARKER_TYPE_ID,
       tags: [tag],
     })) {
       entity.remove();
+      trackedMarkers.delete(entity.id);
     }
   }
 }
@@ -55,6 +87,8 @@ function spawnMarker(player, keyframe, keyframeIndex) {
   Tools.setDynamicProperty(entity, POSITION_PROPERTY, keyframe.position);
   Tools.setDynamicProperty(entity, DIMENSION_PROPERTY, keyframe.dimension);
   Tools.setDynamicProperty(entity, "keyframeIndex", keyframeIndex);
+
+  trackedMarkers.set(entity.id, { entity, ownerId: player.id });
 }
 
 /**
@@ -64,7 +98,7 @@ function spawnMarker(player, keyframe, keyframeIndex) {
  * animação não esteja rodando (ver hideKeyframeMarkers).
  */
 export function syncKeyframeMarkers(player) {
-  removeAllMarkersOf(player);
+  removeTrackedMarkersOf(player);
 
   if (!areMarkersVisible(player)) return;
 
@@ -90,7 +124,7 @@ export function setKeyframeMarkersVisible(player, visible) {
  * quando a animação começa a rodar (playCamera.iniciar).
  */
 export function hideKeyframeMarkers(player) {
-  removeAllMarkersOf(player);
+  removeTrackedMarkersOf(player);
 }
 
 /**
@@ -103,13 +137,31 @@ export function restoreKeyframeMarkersIfEnabled(player) {
 }
 
 /**
- * Segurança de login: se por algum motivo sobrou marcador travado de
- * uma sessão anterior (ex: mundo fechado com a preferência ligada e
- * algo dessincronizou), reconstrói do zero a partir do estado salvo.
+ * Segurança de login: limpa qualquer marcador que tenha sobrado de uma
+ * sessão anterior (a lista em memória não sabe mais deles, por isso
+ * aqui é a única hora em que fazemos a busca "de verdade" no mundo) e
+ * então reconstrói do zero a partir do estado salvo.
  */
 export function resetKeyframeMarkersOnJoin(player) {
+  purgeStaleMarkersOf(player);
   syncKeyframeMarkers(player);
 }
+
+// --- Clique direito no marker abre a edição daquele keyframe ---------
+
+world.afterEvents.playerInteractWithEntity.subscribe((ev) => {
+  const { player, target } = ev;
+  if (target.typeId !== MARKER_TYPE_ID) return;
+
+  // Só o dono desse keyframe pode editar clicando na entidade.
+  const ownerId = Tools.getDynamicProperty(target, OWNER_PROPERTY);
+  if (ownerId !== player.id) return;
+
+  const keyframeIndex = Tools.getDynamicProperty(target, "keyframeIndex");
+  if (keyframeIndex === undefined) return;
+
+  editKeyframe_UI(player, keyframeIndex);
+});
 
 // --- Segurança contra remoção/deslocamento externo -------------------
 
@@ -120,6 +172,8 @@ function findOwnerPlayer(ownerId) {
 world.afterEvents.entityDie.subscribe((ev) => {
   const dead = ev.deadEntity;
   if (dead.typeId !== MARKER_TYPE_ID) return;
+
+  trackedMarkers.delete(dead.id);
 
   const ownerId = Tools.getDynamicProperty(dead, OWNER_PROPERTY);
   const position = Tools.getDynamicProperty(dead, POSITION_PROPERTY);
@@ -157,34 +211,33 @@ world.afterEvents.entityDie.subscribe((ev) => {
  * Checagem periódica (NÃO a cada tick — 1x por segundo) que corrige
  * qualquer marcador deslocado por /tp ou qualquer outro meio externo.
  * Não existe evento nativo de "entidade foi teleportada", então essa é
- * a única forma de detectar isso; mantemos a frequência baixa (20
- * ticks) porque são no máximo ~20 entidades por jogador, então o custo
- * é desprezível.
+ * a única forma de detectar isso. Usa só a lista em memória — nenhuma
+ * consulta ao mundo — então o custo é mínimo mesmo rodando 1x/segundo.
  */
 export function startMarkerDriftGuard() {
   system.runInterval(() => {
-    for (const dimensionId of [
-      "minecraft:overworld",
-      "minecraft:nether",
-      "minecraft:the_end",
-    ]) {
-      const dimension = world.getDimension(dimensionId);
+    for (const [id, info] of trackedMarkers) {
+      const entity = info.entity;
 
-      for (const entity of dimension.getEntities({ type: MARKER_TYPE_ID })) {
-        const correctPos = Tools.getDynamicProperty(
-          entity,
-          POSITION_PROPERTY,
-        );
-        if (!correctPos) continue;
+      if (!entity.isValid) {
+        trackedMarkers.delete(id);
+        continue;
+      }
 
-        const current = entity.location;
-        const dx = Math.abs(current.x - correctPos.x);
-        const dy = Math.abs(current.y - correctPos.y);
-        const dz = Math.abs(current.z - correctPos.z);
+      const correctPos = Tools.getDynamicProperty(entity, POSITION_PROPERTY);
+      if (!correctPos) continue;
 
-        if (dx > DRIFT_TOLERANCE || dy > DRIFT_TOLERANCE || dz > DRIFT_TOLERANCE) {
-          entity.teleport(correctPos, { dimension });
-        }
+      const current = entity.location;
+      const dx = Math.abs(current.x - correctPos.x);
+      const dy = Math.abs(current.y - correctPos.y);
+      const dz = Math.abs(current.z - correctPos.z);
+
+      if (
+        dx > DRIFT_TOLERANCE ||
+        dy > DRIFT_TOLERANCE ||
+        dz > DRIFT_TOLERANCE
+      ) {
+        entity.teleport(correctPos, { dimension: entity.dimension });
       }
     }
   }, 20);

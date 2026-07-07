@@ -31,7 +31,10 @@ export function editKeyframe_UI(player, keyframeIndex) {
       return listKeyframe_UI(player);
     }
 
-    const keyframeName = keyframe.name ?? String(keyframeIndex);
+    const keyframeName =
+      keyframe.name && keyframe.name !== ""
+        ? keyframe.name
+        : `Keyframe ${keyframeIndex}`;
     const posText = Object.entries(keyframePos)
       .map(([key, value]) => `${key}: ${value}`)
       .join("  ");

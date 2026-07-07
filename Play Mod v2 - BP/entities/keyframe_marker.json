@@ -12,8 +12,6 @@
         "family": ["playmod_keyframe_marker", "inanimate"]
       },
 
-      // Sem física: não cai, não flutua na água, não é empurrado por
-      // pistão nem por outras entidades.
       "minecraft:physics": {
         "has_gravity": false,
         "has_collision": false
@@ -26,11 +24,6 @@
         "value": 1
       },
 
-      // "Imortal": nenhuma causa de dano (fogo, sufocamento, afogamento,
-      // explosão, ataque, void, etc.) tira vida dela. O único jeito de
-      // remover é via /kill (que ignora o sistema de dano por completo)
-      // — isso é detectado e revertido pelo script
-      // (keyframeMarkerService.js, ver world.afterEvents.entityDie).
       "minecraft:health": {
         "value": 1,
         "max": 1
@@ -43,12 +36,8 @@
           }
         ]
       },
-      "minecraft:is_immune_to_fire": {},
+      "minecraft:fire_immune": {},
 
-      // Nenhum componente de despawn: por padrão, uma entidade custom
-      // sem "minecraft:despawn" não some sozinha nunca. Só é removida
-      // quando o próprio script chama entity.remove() (ao desligar o
-      // toggle, iniciar a animação, ou reconstruir os marcadores).
       "minecraft:collision_box": {
         "width": 0.5,
         "height": 0.5

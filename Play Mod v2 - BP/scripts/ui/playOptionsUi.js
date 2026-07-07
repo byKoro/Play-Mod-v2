@@ -16,7 +16,9 @@ export function playOptionsUi(player) {
     const actions = [
       {
         text: Tools.formatToggle("menu.play_options.button.loop", options.loop),
-        icon: "textures/ui/play_mod/loop.png",
+        icon: options.loop
+          ? "textures/ui/play_mod/loop_on.png"
+          : "textures/ui/play_mod/loop_off.png",
         action: () => {
           toggleLoop(player);
           Tools.playSuccess(player);
@@ -28,7 +30,10 @@ export function playOptionsUi(player) {
           "menu.play_options.button.camera_relative",
           options.controlScheme === "camera_relative",
         ),
-        icon: "textures/ui/play_mod/camera_relative.png",
+        icon:
+          options.controlScheme === "camera_relative"
+            ? "textures/ui/play_mod/camera_relative_on.png"
+            : "textures/ui/play_mod/camera_relative_off.png",
         action: () => {
           toggleControlScheme(player, "camera_relative");
           Tools.playSuccess(player);

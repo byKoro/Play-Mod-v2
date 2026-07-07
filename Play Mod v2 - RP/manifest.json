@@ -1,52 +1,31 @@
 {
-	"format_version": 2,
-	"metadata": {
-		"authors": [
-			"koro."
-		],
-		"generated_with": {
-			"bridge": [
-				"2.7.54"
-			],
-			"dash": [
-				"0.11.7"
-			]
-		}
-	},
-	"header": {
-		"name": "pack.name",
-		"description": "pack.description",
-		"min_engine_version": [
-			1,
-			26,
-			0
-		],
-		"uuid": "d51a00d4-0c36-4514-952c-0d6152263e4b",
-		"version": [
-			1,
-			0,
-			0
-		]
-	},
-	"modules": [
-		{
-			"type": "resources",
-			"uuid": "21770b0f-fd12-4e33-b4d4-ec07cf259f4c",
-			"version": [
-				1,
-				0,
-				0
-			]
-		}
-	],
-	"dependencies": [
-		{
-			"uuid": "997934d7-6fb2-4cef-8b78-eb0c8fe799d4",
-			"version": [
-				1,
-				0,
-				0
-			]
-		}
-	]
+  "format_version": 2,
+  "metadata": {
+    "authors": ["koro."],
+    "generated_with": {
+      "bridge": ["2.7.54"],
+      "dash": ["0.11.7"],
+      "blockbench_item_wizard": ["1.2.4"]
+    }
+  },
+  "header": {
+    "name": "pack.name",
+    "description": "pack.description",
+    "min_engine_version": [1, 26, 0],
+    "uuid": "d51a00d4-0c36-4514-952c-0d6152263e4b",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "21770b0f-fd12-4e33-b4d4-ec07cf259f4c",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "997934d7-6fb2-4cef-8b78-eb0c8fe799d4",
+      "version": [1, 0, 0]
+    }
+  ]
 }
