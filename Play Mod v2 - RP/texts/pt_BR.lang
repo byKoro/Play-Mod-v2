@@ -1,43 +1,43 @@
-pack.name=Play Mod v.2 BP
+pack.name=Play Mod RP
 pack.description=Sistema de Timeline e Keyframes para câmeras
 
-menu.main.title=§6§0§0§0§6Timeline: %s 
+menu.main.title=§6§0§0§0§6Timeline: %s
 menu.keyframes.title.active=§6Timeline: %s
-menu.keyframes.title.none=§eSem Timeline Ativa \n §jSelecione ou crie uma nova linha
+menu.keyframes.title.none=§eSem Timeline Ativa \n §jSelecione outra
 menu.timelines.title=§6Timelines Salvas
 ui.view.title=§6Timeline: %s
-ui.save.title=§6Exportar Timeline \n §jSalvar em um arquivo
-ui.edit.title=§6Editar Keyframe %s \n §jModificar opções do frame
-ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §jEditor em massa
+ui.save.title=§6Exportar Timeline \n §jSalvar arquivo
+ui.edit.title=§6Editar Keyframe %s \n §jEditar frame
+ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §jEdição geral
 
-ui.save.field.label=§7Salvar nome da timeline \n §jDefina o nome para exportar
-ui.save.field.placeholder=§7Escreva o nome... \n §jUse texto sem caracteres especiais
-ui.edit.rename.label=§7Nomeie o keyframe \n §jMudar o nome deste frame específico
-ui.edit.pos.label=§7Ajuste fino de posição \n §jCoordenadas XYZ da câmera
-ui.edit.rot.label=§7Ajuste fino de rotação \n §jÂngulos de inclinação e rotação
-ui.edit_all.transition.label=§7Tempo total em segundos \n §jDuração de toda a animação
-ui.edit_all.markers.label=§2Mostrar marcadores? \n §jExibe uma entidade em cada keyframe salvo
-menu.keyframes.default_name=§eKeyframe %s \n §jNome padrão do frame
+ui.save.field.label=§7Salvar nome da timeline \n §jDefina nome
+ui.save.field.placeholder=§7Escreva o nome... \n §jSem especiais
+ui.edit.rename.label=§7Nomeie o keyframe \n §jMude nome
+ui.edit.pos.label=§7Ajuste fino de posição \n §jPosição XYZ
+ui.edit.rot.label=§7Ajuste fino de rotação \n §jRotação câmera
+ui.edit_all.transition.label=§7Tempo total em segundos \n §jDuração total
+ui.edit_all.markers.label=§2Mostrar marcadores? \n §jExibe marcadores
+menu.keyframes.default_name=§eKeyframe %s \n §jNome padrão
 
-menu.main.button.set_keyframe=§2Definir Keyframe \n §jCriar keyframe da câmera
-menu.main.button.manage_keyframes=§2Gerenciar Keyframes \n §jVer e editar frames criados
-menu.main.button.manage_timelines=§2Gerenciar Timelines \n §jAbrir lista de timelines salvas
-menu.main.button.start=§2Iniciar \n §jExecutar a animação da câmera
+menu.main.button.set_keyframe=§2Definir Keyframe \n §fCriar frame
+menu.main.button.manage_keyframes=§2Gerenciar Keyframes \n §fEditar frames
+menu.main.button.manage_timelines=§2Gerenciar Timelines \n §fAbrir lista
+menu.main.button.start=§2Iniciar \n §fReproduzir
 
-menu.play_options.title=§6Opções de Reprodução \n §jDefina como a animação vai rodar
-menu.play_options.button.loop=§2Repetir (Loop) \n §jRepete a animação sem parar
-menu.play_options.button.camera_relative=§2Câmera Relativa \n §jMove-se em relação à câmera
-menu.play_options.button.start=§2Iniciar \n §jExecutar a animação da câmera
-menu.keyframes.button.save_new=§2Salvar Nova Timeline \n §jGravar a sequência atual
-menu.keyframes.button.edit_all=§2Alterar Todos \n §jAplicar configurações a todos os frames
-ui.view.button.load=§2Carregar \n §jTornar esta timeline ativa
+menu.play_options.title=§6Opções de Reprodução \n §jConfigurar reprodução
+menu.play_options.button.loop=§2Repetir (Loop) \n §fLoop infinito
+menu.play_options.button.camera_relative=§2Câmera Relativa \n §fModo relativo
+menu.play_options.button.start=§2Iniciar \n §fReproduzir
+menu.keyframes.button.save_new=§2Salvar Nova Timeline \n §fSalvar timeline
+menu.keyframes.button.edit_all=§2Alterar Todos \n §fEditar todos
+ui.view.button.load=§2Carregar \n §fAtivar timeline
 ui.edit.button.submit=§2Salvar
 
-menu.main.button.delete_last=§cDeletar Último Frame \n §jDesfazer a última ação
-ui.view.button.delete=§cDeletar \n §jApagar esta timeline para sempre
-ui.edit.redo.label=§cRegravar? Marque e salve. \n §jAtualizar posição para o local atual
-ui.edit.delete.label=§cDeletar? Marque e salve. \n §jRemover este frame da timeline
-ui.edit_all.reset.label=§4Deletar todos? \n §jLimpar a timeline inteira
+menu.main.button.delete_last=§cDeletar Último Frame \n §fRemover último
+ui.view.button.delete=§cDeletar \n §fExcluir timeline
+ui.edit.redo.label=§cRegravar? Marque e salve. \n §jAtualizar posição
+ui.edit.delete.label=§cDeletar? Marque e salve. \n §jRemover frame
+ui.edit_all.reset.label=§4Deletar todos? \n §jLimpar tudo
 
 sys.msg.success.generic=§9[Play Mod] §aFeito com sucesso!
 sys.msg.success.keyframe_set=§9[Play Mod] §aKeyframe definido com sucesso!
@@ -56,10 +56,11 @@ sys.error.invalid_index=§9[Play Mod] §cKeyframe %s não existe!
 sys.error.multiple_actions=§9[Play Mod] §cMarque apenas uma opção (Regravar ou Deletar) por vez!
 sys.error.no_timelines=§9[Play Mod] §cVocê ainda não tem nenhuma timeline salva!
 
-ui.redo.keyframe.button=§2Reposicionar keyframe\n §jReposiciona o keyframe
-ui.cancel.button=§cCancelar edição \n§jSair do modo edição
+ui.redo.keyframe.button=§2Reposicionar keyframe\n §fMover frame
+ui.cancel.button=§cCancelar edição \n §fSair edição
 
-menu.play_control.title=§6Controle de Reprodução \n §jGerencie a animação em andamento
-menu.play_control.button.pause=§2Pausar \n §jCongela a câmera na posição atual
-menu.play_control.button.resume=§2Continuar \n §jRetoma a animação de onde parou
-menu.play_control.button.stop=§cParar \n §jEncerra a animação e libera o controle
+menu.play_control.title=§6Controle de Reprodução \n §jControlar animação
+menu.play_control.button.pause=§2Pausar \n §fPausar câmera
+menu.play_control.button.resume=§2Continuar \n §fRetomar animação
+menu.play_control.button.stop=§cParar \n §fEncerrar animação
+item.playmod:play_camera=Play Camera
