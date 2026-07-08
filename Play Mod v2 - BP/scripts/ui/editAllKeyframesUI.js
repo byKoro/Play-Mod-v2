@@ -7,6 +7,8 @@ import {
   setMaxTimeline,
   areMarkersVisible,
   setKeyframeMarkersVisible,
+  getSkipFlycamPrompt,
+  setSkipFlycamPrompt,
 } from "../services/index";
 import { listKeyframe_UI } from "./listKeyframeUi";
 import { Tools } from "../utils/tools";
@@ -24,6 +26,11 @@ export function editAllKeyframes(player) {
     form.toggle(Tools.t("ui.edit_all.markers.label"), {
       defaultValue: areMarkersVisible(player),
     });
+    form.toggle(Tools.t("ui.edit_all.ask_flycam.label"), {
+      // O toggle mostra "perguntar?", então é o inverso do flag
+      // "skip" salvo internamente.
+      defaultValue: !getSkipFlycamPrompt(player),
+    });
     form.toggle(Tools.t("ui.edit_all.reset.label"));
 
     form.show(player).then((response) => {
@@ -32,9 +39,11 @@ export function editAllKeyframes(player) {
       const values = response.formValues;
       const currentMaxTime = values[0];
       const showMarkers = values[1];
-      const delAllKeyframes = values[2];
+      const askFlycam = values[2];
+      const delAllKeyframes = values[3];
 
       setKeyframeMarkersVisible(player, showMarkers);
+      setSkipFlycamPrompt(player, !askFlycam);
 
       if (resetTimeline(player, delAllKeyframes));
       setMaxTimeline(player, currentMaxTime);

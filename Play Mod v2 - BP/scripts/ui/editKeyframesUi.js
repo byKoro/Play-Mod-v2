@@ -2,9 +2,12 @@ import { system } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { Tools } from "../utils/tools";
 import { listKeyframe_UI } from "./listKeyframeUi";
+import { maybeConfirmFlycam } from "./flycamConfirmUi";
+import { startFlycam } from "../services/flycamService.js";
 import {
   delKeyframe,
   redoKeyframe,
+  requestInsertKeyframe,
   renameKeyframe,
   validateEditKeyframeForm,
   getKeyframe,
@@ -27,14 +30,14 @@ export function editKeyframe_UI(player, keyframeIndex) {
       // Ex: o keyframe foi deletado por outro caminho e o índice ficou velho.
       console.error(error);
       Tools.playError(player);
-      player.sendMessage(Tools.t("sys.error.invalid_index", [keyframeIndex]));
+      player.sendMessage(Tools.t("sys.error.invalid_index", [keyframeIndex + 1]));
       return listKeyframe_UI(player);
     }
 
     const keyframeName =
       keyframe.name && keyframe.name !== ""
         ? keyframe.name
-        : `Keyframe ${keyframeIndex}`;
+        : `Keyframe ${keyframeIndex + 1}`;
     const posText = Object.entries(keyframePos)
       .map(([key, value]) => `${key}: ${value}`)
       .join("  ");
@@ -56,6 +59,10 @@ export function editKeyframe_UI(player, keyframeIndex) {
       {
         type: "toggle",
         label: Tools.t("ui.edit.redo.label"),
+      },
+      {
+        type: "toggle",
+        label: Tools.t("ui.edit.insert.label"),
       },
       {
         type: "toggle",
@@ -81,7 +88,7 @@ export function editKeyframe_UI(player, keyframeIndex) {
 
     // Constroi modal
     const form = new ModalFormData();
-    form.title(Tools.t("ui.edit.title", [keyframeIndex]));
+    form.title(Tools.t("ui.edit.title", [keyframeIndex + 1]));
     campos.forEach((campo) => {
       switch (campo.type) {
         case "textField":
@@ -114,13 +121,30 @@ export function editKeyframe_UI(player, keyframeIndex) {
 
       renameKeyframe(player, keyframeIndex, keyframeName, value[0]);
 
-      if (redoKeyframe(player, keyframeIndex, value[1])) return;
+      // Regravar: pergunta se quer usar flycam pra escolher a nova
+      // posição, ou seguir o fluxo clássico (andar até lá e usar o
+      // item de novo).
+      if (value[1]) {
+        return maybeConfirmFlycam(player, {
+          onYes: () => startFlycam(player, { kind: "replace", index: keyframeIndex }),
+          onNo: () => redoKeyframe(player, keyframeIndex, true),
+        });
+      }
 
-      if (delKeyframe(player, keyframeIndex, value[2])) {
+      // Inserir antes deste: mesma pergunta, só que insere em vez de
+      // substituir.
+      if (value[2]) {
+        return maybeConfirmFlycam(player, {
+          onYes: () => startFlycam(player, { kind: "insert", index: keyframeIndex }),
+          onNo: () => requestInsertKeyframe(player, keyframeIndex),
+        });
+      }
+
+      if (delKeyframe(player, keyframeIndex, value[3])) {
         return listKeyframe_UI(player);
       }
-      setKeyframePosition(player, keyframeIndex, value[3]);
-      setKeyframeRotation(player, keyframeIndex, value[4]);
+      setKeyframePosition(player, keyframeIndex, value[4]);
+      setKeyframeRotation(player, keyframeIndex, value[5]);
 
       Tools.playSuccess(player);
       player.sendMessage(Tools.t("sys.msg.success.keyframe_updated"));

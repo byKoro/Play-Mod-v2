@@ -64,3 +64,49 @@ menu.play_control.button.pause=§2Pausar \n §fPausar câmera
 menu.play_control.button.resume=§2Continuar \n §fRetomar animação
 menu.play_control.button.stop=§cParar \n §fEncerrar animação
 item.playmod:play_camera=Play Camera
+
+menu.flycam.confirm.title=§6Modo Flycam
+menu.flycam.confirm.body=§7Deseja usar a câmera livre (flycam) pra posicionar esse keyframe? Você vai poder voar livremente até o ponto ideal.
+menu.flycam.confirm.yes=§2Sim, voar livremente
+menu.flycam.confirm.no=§7Não, usar minha posição atual
+menu.flycam.started=§9[Play Mod] §aModo flycam ativado! Voe até a posição desejada e use o item pra marcar um ponto. Agache pra sair.
+menu.flycam.ended=§9[Play Mod] §aModo flycam encerrado. §f%s §aponto(s) marcado(s).
+sys.error.animation_playing=§9[Play Mod] §cVocê não pode fazer isso com uma animação em andamento!
+ui.edit.insert.label=§eInserir antes deste? Marque e salve. \n §jAdiciona um novo keyframe logo antes deste
+ui.insert.keyframe.button=§2Inserir keyframe\n §fAdicionar novo frame aqui
+
+ui.edit_all.ask_flycam.label=§2Perguntar sobre flycam? \n §jSe desligado, sempre usa a posição atual sem perguntar
+sys.error.below_world=§9[Play Mod] §cNão é possível colocar um keyframe abaixo de Y %s!
+menu.flycam.actionbar.hint=§7Chegue perto do seu corpo pra sair do flycam
+menu.flycam.actionbar.returning=§eSaindo do flycam em §f%ss§e...
+
+menu.main.button.presets=§2Presets \n §jCâmeras ao vivo: órbita 360° e ângulos fixos
+menu.presets.title=§6Presets de Câmera
+menu.presets.button.orbit_360=§2Órbita 360° \n §jGira continuamente ao redor de você
+menu.presets.button.north=§2Norte \n §jCâmera fixa ao norte, olhando pra você
+menu.presets.button.east=§2Leste \n §jCâmera fixa ao leste, olhando pra você
+menu.presets.button.south=§2Sul \n §jCâmera fixa ao sul, olhando pra você
+menu.presets.button.west=§2Oeste \n §jCâmera fixa ao oeste, olhando pra você
+ui.preset.height.label=§7Altura
+ui.preset.distance.label=§7Distância
+ui.preset.orbit.title=§6Órbita 360°
+ui.preset.orbit.speed.label=§7Velocidade de rotação
+ui.preset.fixed.title=§6Câmera Fixa
+menu.preset.started=§9[Play Mod] §aPreset de câmera ativado! Use o item de novo pra encerrar.
+menu.preset.stopped=§9[Play Mod] §aPreset de câmera encerrado.
+sys.error.camera_busy=§9[Play Mod] §cVocê já está usando outra função de câmera agora!
+
+menu.presets.button.chase=§2Perseguição \n §jSegue sempre atrás de você
+menu.presets.button.handheld=§2Câmera de Mão \n §jSegue atrás de você com tremor orgânico
+menu.presets.button.pendulum=§2Pêndulo \n §jBalança de um lado pro outro, sem girar 360°
+menu.presets.button.aerial=§2Vista Aérea \n §jÓrbita ampla e alta, tipo plano de estabelecimento
+ui.preset.relative.label=§2Relativo ao jogador? \n §jSegue a direção que você olha, em vez da bússola do mundo
+ui.preset.chase.title=§6Câmera de Perseguição
+ui.preset.handheld.title=§6Câmera de Mão
+ui.preset.pendulum.title=§6Pêndulo
+ui.preset.pendulum.sweep.label=§7Amplitude do balanço
+ui.preset.aerial.title=§6Vista Aérea
+
+ui.preset.control_scheme.label=§2Câmera relativa (WASD)? \n §jMove-se em relação à câmera enquanto o preset estiver ativo
+
+menu.play_options.button.look_at_player=§2Olhar pro Jogador \n §fMira nos seus pés em vez da rotação gravada

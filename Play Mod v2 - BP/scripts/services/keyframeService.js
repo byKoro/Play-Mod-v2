@@ -6,15 +6,18 @@ import {
   saveTimeline,
   validateTimelineDimension,
 } from "./timelineService";
-import { syncKeyframeMarkers } from "./keyframeMarkerService.js";
 import { editKeyframe_UI } from "../ui/index";
 
-export function createKeyframe(player) {
+// Se `override` for passado ({ position, rotation, dimension }), usa
+// esses valores em vez de ler a posição/rotação atual do jogador — é
+// o que permite o flycam colocar um keyframe na posição virtual da
+// câmera voadora, não na posição real do corpo do jogador.
+export function createKeyframe(player, override = null) {
   return {
     name: "",
-    position: getHeadPosition(player),
-    rotation: getPlayerRotation(player),
-    dimension: getDimension(player),
+    position: override?.position ?? getHeadPosition(player),
+    rotation: override?.rotation ?? getPlayerRotation(player),
+    dimension: override?.dimension ?? getDimension(player),
   };
 }
 
@@ -27,10 +30,36 @@ export function addKeyframe(player, keyframe) {
 
   timeline.keyframes.push(keyframe);
   saveTimeline(player, timeline);
-  syncKeyframeMarkers(player);
 
   Tools.playSuccess(player);
   player.sendMessage(Tools.t("sys.msg.success.keyframe_set"));
+}
+
+/** Insere um keyframe ANTES do índice dado (empurra os seguintes). */
+export function insertKeyframeAt(player, index, keyframe) {
+  const timeline = getTimeline(player);
+  if (!timeline) return false;
+
+  const clampedIndex = Math.max(0, Math.min(index, timeline.keyframes.length));
+  timeline.keyframes.splice(clampedIndex, 0, keyframe);
+  saveTimeline(player, timeline);
+
+  Tools.playSuccess(player);
+  player.sendMessage(Tools.t("sys.msg.success.keyframe_set"));
+  return true;
+}
+
+/** Substitui o keyframe no índice dado por um novo. */
+export function replaceKeyframe(player, index, keyframe) {
+  const timeline = getTimeline(player);
+  if (!timeline?.keyframes[index]) return false;
+
+  timeline.keyframes[index] = keyframe;
+  saveTimeline(player, timeline);
+
+  Tools.playSuccess(player);
+  player.sendMessage(Tools.t("sys.msg.success.keyframe_updated"));
+  return true;
 }
 
 function getHeadPosition(player) {
@@ -58,6 +87,24 @@ function getDimension(player) {
   return player.dimension.id;
 }
 
+// Prepara (ou cria) a timeline atual e roda as checagens de limite e
+// dimensão que TODO caminho de colocar keyframe precisa passar —
+// usado tanto pelo fluxo clássico (setKeyframe) quanto pelo flycam
+// (placeFlycamKeyframe), pra manter as duas formas sempre consistentes.
+function prepareKeyframePlacement(player) {
+  let timeline = getTimeline(player);
+
+  if (!timeline) {
+    timeline = createTimeline(player);
+    saveTimeline(player, timeline);
+  }
+
+  if (limitTimelineKeyframes(player)) return null;
+  if (!validateTimelineDimension(player, timeline)) return null;
+
+  return timeline;
+}
+
 export function redoKeyframe(player, keyframeIndex, value) {
   if (value) {
     Tools.setDynamicProperty(player, "editKeyframe", keyframeIndex);
@@ -65,6 +112,12 @@ export function redoKeyframe(player, keyframeIndex, value) {
     return true;
   }
   return false;
+}
+
+/** Equivalente a redoKeyframe, mas pro fluxo de INSERIR sem flycam. */
+export function requestInsertKeyframe(player, index) {
+  Tools.setDynamicProperty(player, "insertKeyframe", index);
+  player.addTag("insertKeyframe");
 }
 
 /**
@@ -95,7 +148,6 @@ export function delKeyframe(player, keyframeIndex, value) {
 
     timeline.keyframes.splice(keyframeIndex, 1);
     saveTimeline(player, timeline);
-    syncKeyframeMarkers(player);
 
     Tools.playSuccess(player);
     player.sendMessage(Tools.t("sys.msg.success.keyframe_deleted"));
@@ -137,7 +189,6 @@ export function setKeyframePosition(player, index, text) {
   };
 
   saveTimeline(player, timeline);
-  syncKeyframeMarkers(player);
   return true;
 }
 
@@ -163,7 +214,6 @@ export function delLastKeyframe(player) {
   if (timeline && timeline.keyframes.length > 0) {
     timeline.keyframes.pop();
     saveTimeline(player, timeline);
-    syncKeyframeMarkers(player);
     Tools.playSuccess(player);
     player.sendMessage(Tools.t("sys.msg.success.frame_removed"));
   } else {
@@ -172,37 +222,70 @@ export function delLastKeyframe(player) {
   }
 }
 
-export function setKeyframe(player) {
-  let timeline = getTimeline(player);
+// Fluxo clássico: chamado quando o jogador usa o item ativador "no
+// mundo" (não em flycam). Cobre os 3 casos possíveis conforme a tag
+// que o jogador estiver carregando: regravar (editKeyframe), inserir
+// (insertKeyframe), ou adicionar no fim (nenhuma das duas).
+// Abaixo disso é o "vazio" do mundo — não faz sentido gravar câmera lá.
+const MIN_KEYFRAME_Y = -64;
 
-  if (!timeline) {
-    timeline = createTimeline(player);
-    saveTimeline(player, timeline);
+function validateKeyframeHeight(player, keyframe) {
+  if (keyframe.position.y < MIN_KEYFRAME_Y) {
+    Tools.playError(player);
+    player.sendMessage(Tools.t("sys.error.below_world", [MIN_KEYFRAME_Y]));
+    return false;
   }
+  return true;
+}
 
-  if (limitTimelineKeyframes(player)) return;
-  if (!validateTimelineDimension(player, timeline)) return;
+export function setKeyframe(player) {
+  const timeline = prepareKeyframePlacement(player);
+  if (!timeline) return;
 
   const keyframe = createKeyframe(player);
+  if (!validateKeyframeHeight(player, keyframe)) return;
 
   if (player.getTags().includes("editKeyframe")) {
     const keyframeIndex = Number(
       Tools.getDynamicProperty(player, "editKeyframe"),
     );
-
     if (isNaN(keyframeIndex) || !timeline.keyframes[keyframeIndex]) return;
 
-    timeline.keyframes[keyframeIndex] = keyframe;
-    saveTimeline(player, timeline);
-    syncKeyframeMarkers(player);
-
     player.removeTag("editKeyframe");
-
-    Tools.playSuccess(player);
-    player.sendMessage(Tools.t("sys.msg.success.keyframe_updated"));
-
+    replaceKeyframe(player, keyframeIndex, keyframe);
     return editKeyframe_UI(player, keyframeIndex);
   }
 
+  if (player.getTags().includes("insertKeyframe")) {
+    const insertIndex = Number(
+      Tools.getDynamicProperty(player, "insertKeyframe"),
+    );
+    player.removeTag("insertKeyframe");
+    if (!isNaN(insertIndex)) insertKeyframeAt(player, insertIndex, keyframe);
+    return;
+  }
+
   addKeyframe(player, keyframe);
+}
+
+// Fluxo flycam: chamado a cada ponto colocado durante o voo, com a
+// posição/rotação virtual da câmera (não a do corpo do jogador) e o
+// modo definido no início do voo (append/insert/replace).
+export function placeFlycamKeyframe(player, override, mode) {
+  const timeline = prepareKeyframePlacement(player);
+  if (!timeline) return false;
+
+  const keyframe = createKeyframe(player, override);
+  if (!validateKeyframeHeight(player, keyframe)) return false;
+
+  if (mode.kind === "replace") {
+    return replaceKeyframe(player, mode.index, keyframe);
+  }
+
+  if (mode.kind === "insert") {
+    return insertKeyframeAt(player, mode.index, keyframe);
+  }
+
+  addKeyframe(player, keyframe);
+  return true;
 }

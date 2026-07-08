@@ -1,10 +1,6 @@
 import { world } from "@minecraft/server";
 import { Tools } from "../utils/tools";
 import { saveTimelineUi } from "../ui/saveTimelineUi";
-import {
-  syncKeyframeMarkers,
-  resetKeyframeMarkersOnJoin,
-} from "./keyframeMarkerService.js";
 
 export function createTimeline(player) {
   return {
@@ -41,7 +37,6 @@ export function saveTimeline(player, timeline) {
 export function resetTimeline(player, value) {
   if (value) {
     saveTimeline(player, createTimeline(player));
-    syncKeyframeMarkers(player);
     Tools.playSuccess(player);
     player.sendMessage(Tools.t("sys.msg.success.generic"));
   }
@@ -57,8 +52,6 @@ export function registerTimelineEvents() {
       Tools.setDynamicProperty(player, "dinamicText", "");
       saveTimeline(player, createTimeline(player));
     }
-
-    resetKeyframeMarkersOnJoin(player);
   });
 }
 
@@ -108,7 +101,7 @@ export function exportTimeline(player, value) {
 
 export function limitTimelineKeyframes(player) {
   const timeline = getTimeline(player);
-  if (timeline.keyframes.length > 20) {
+  if (timeline.keyframes.length >= 20) {
     // Dica: Use player.sendMessage em vez de world.sendMessage
     // para que apenas o jogador que atingiu o limite veja o erro.
     Tools.playError(player);
@@ -116,6 +109,24 @@ export function limitTimelineKeyframes(player) {
     return true;
   }
   return false;
+}
+
+/**
+ * true se o jogador marcou "não perguntar de novo" sobre o flycam
+ * (seja por já ter respondido "não" uma vez, seja pelo toggle manual
+ * em Editar Tudo). É guardado NA TIMELINE, não no jogador — cada
+ * timeline tem sua própria preferência.
+ */
+export function getSkipFlycamPrompt(player) {
+  const timeline = getTimeline(player);
+  return timeline?.skipFlycamPrompt ?? false;
+}
+
+export function setSkipFlycamPrompt(player, value) {
+  const timeline = getTimeline(player);
+  if (!timeline) return;
+  timeline.skipFlycamPrompt = value;
+  saveTimeline(player, timeline);
 }
 
 function createNewTimeline(player, value) {
@@ -164,7 +175,6 @@ export function setCurrentTimeline(player, timeline) {
   if (!timelines.includes(timeline)) return false;
 
   Tools.setDynamicProperty(player, "currentTimeline", timeline);
-  syncKeyframeMarkers(player);
   return true;
 }
 
@@ -186,7 +196,6 @@ export function deleteTimeline(player, timelineName) {
     Tools.setDynamicProperty(player, "currentTimeline", "");
   }
 
-  syncKeyframeMarkers(player);
 
   Tools.playSuccess(player);
   player.sendMessage(

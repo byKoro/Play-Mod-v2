@@ -4,6 +4,7 @@ import {
   getPlayOptions,
   toggleLoop,
   toggleControlScheme,
+  toggleLookAtPlayer,
   iniciar,
 } from "../services/index.js";
 import { Tools } from "../utils/index.js";
@@ -36,6 +37,20 @@ export function playOptionsUi(player) {
             : "textures/ui/play_mod/camera_relative_off.png",
         action: () => {
           toggleControlScheme(player, "camera_relative");
+          Tools.playSuccess(player);
+          playOptionsUi(player);
+        },
+      },
+      {
+        text: Tools.formatToggle(
+          "menu.play_options.button.look_at_player",
+          options.lookAtPlayer,
+        ),
+        icon: options.lookAtPlayer
+          ? "textures/ui/play_mod/look_at_player_on.png"
+          : "textures/ui/play_mod/look_at_player_off.png",
+        action: () => {
+          toggleLookAtPlayer(player);
           Tools.playSuccess(player);
           playOptionsUi(player);
         },

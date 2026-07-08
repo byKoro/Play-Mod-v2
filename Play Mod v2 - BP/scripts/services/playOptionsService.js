@@ -13,6 +13,7 @@ function defaultPlayOptions() {
   return {
     loop: false,
     controlScheme: "none", // "none" | "camera_relative"
+    lookAtPlayer: false,
   };
 }
 
@@ -30,6 +31,17 @@ function savePlayOptions(player, options) {
 export function toggleLoop(player) {
   const options = getPlayOptions(player);
   options.loop = !options.loop;
+  savePlayOptions(player, options);
+  return options;
+}
+
+// Alterna se a rotação da câmera, durante a reprodução, ignora o que
+// foi gravado em cada keyframe e passa a mirar continuamente nos pés
+// do jogador (posição atual, em tempo real) — a posição do caminho
+// continua vindo normalmente da spline; só a rotação muda de fonte.
+export function toggleLookAtPlayer(player) {
+  const options = getPlayOptions(player);
+  options.lookAtPlayer = !options.lookAtPlayer;
   savePlayOptions(player, options);
   return options;
 }

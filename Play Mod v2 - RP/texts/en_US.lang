@@ -64,3 +64,49 @@ menu.play_control.button.pause=§2Pause \n §fPause camera
 menu.play_control.button.resume=§2Resume \n §fResume playback
 menu.play_control.button.stop=§cStop \n §fStop playback
 item.playmod:play_camera=Play Camera
+
+menu.flycam.confirm.title=§6Flycam Mode
+menu.flycam.confirm.body=§7Do you want to use free camera (flycam) to position this keyframe? You'll be able to fly freely to the ideal spot.
+menu.flycam.confirm.yes=§2Yes, fly freely
+menu.flycam.confirm.no=§7No, use my current position
+menu.flycam.started=§9[Play Mod] §aFlycam mode enabled! Fly to the desired position and use the item to mark a point. Sneak to exit.
+menu.flycam.ended=§9[Play Mod] §aFlycam mode ended. §f%s §apoint(s) placed.
+sys.error.animation_playing=§9[Play Mod] §cYou can't do that while an animation is playing!
+ui.edit.insert.label=§eInsert before this one? Check and save. \n §jAdds a new keyframe right before this one
+ui.insert.keyframe.button=§2Insert keyframe\n §fAdd new frame here
+
+ui.edit_all.ask_flycam.label=§2Ask about flycam? \n §jIf off, always uses your current position without asking
+sys.error.below_world=§9[Play Mod] §cYou can't place a keyframe below Y %s!
+menu.flycam.actionbar.hint=§7Get close to your body to exit flycam
+menu.flycam.actionbar.returning=§eExiting flycam in §f%ss§e...
+
+menu.main.button.presets=§2Presets \n §jLive cameras: 360° orbit and fixed angles
+menu.presets.title=§6Camera Presets
+menu.presets.button.orbit_360=§2360° Orbit \n §jSpins continuously around you
+menu.presets.button.north=§2North \n §jFixed camera to the north, facing you
+menu.presets.button.east=§2East \n §jFixed camera to the east, facing you
+menu.presets.button.south=§2South \n §jFixed camera to the south, facing you
+menu.presets.button.west=§2West \n §jFixed camera to the west, facing you
+ui.preset.height.label=§7Height
+ui.preset.distance.label=§7Distance
+ui.preset.orbit.title=§6360° Orbit
+ui.preset.orbit.speed.label=§7Rotation speed
+ui.preset.fixed.title=§6Fixed Camera
+menu.preset.started=§9[Play Mod] §aCamera preset enabled! Use the item again to stop.
+menu.preset.stopped=§9[Play Mod] §aCamera preset stopped.
+sys.error.camera_busy=§9[Play Mod] §cYou're already using another camera feature right now!
+
+menu.presets.button.chase=§2Chase Cam \n §jAlways follows behind you
+menu.presets.button.handheld=§2Handheld Cam \n §jFollows behind you with organic shake
+menu.presets.button.pendulum=§2Pendulum \n §jSwings side to side instead of spinning 360°
+menu.presets.button.aerial=§2Aerial View \n §jWide, high orbit, like an establishing shot
+ui.preset.relative.label=§2Relative to player? \n §jFollows the direction you're facing, instead of the world compass
+ui.preset.chase.title=§6Chase Camera
+ui.preset.handheld.title=§6Handheld Camera
+ui.preset.pendulum.title=§6Pendulum
+ui.preset.pendulum.sweep.label=§7Swing amplitude
+ui.preset.aerial.title=§6Aerial View
+
+ui.preset.control_scheme.label=§2Relative camera (WASD)? \n §jMove relative to the camera while the preset is active
+
+menu.play_options.button.look_at_player=§2Look at Player \n §fAims at your feet instead of the recorded rotation

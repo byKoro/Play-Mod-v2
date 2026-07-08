@@ -1,11 +1,11 @@
 import { system, EasingType, TicksPerSecond } from "@minecraft/server";
 import { getCurrentTimeline } from "../services/index.js";
-import { getPlayOptions, applyControlScheme } from "../services/playOptionsService.js";
-import { lockActivatorItem, unlockActivatorItem } from "./itemGuardService.js";
 import {
-  hideKeyframeMarkers,
-  restoreKeyframeMarkersIfEnabled,
-} from "./keyframeMarkerService.js";
+  getPlayOptions,
+  applyControlScheme,
+} from "../services/playOptionsService.js";
+import { lockActivatorItem, unlockActivatorItem } from "./itemGuardService.js";
+import { isInPreset } from "./presetCameraService.js";
 import { Tools } from "../utils/index.js";
 
 // Tag aplicada ao jogador enquanto a animação está rodando (tocando ou
@@ -31,6 +31,14 @@ const ARC_LENGTH_SAMPLES_PER_SEGMENT = 24;
 // A cada quantos ticks a câmera é reposicionada.
 // 1 = atualiza 20x/seg (máxima suavidade). 2 = 10x/seg (mais leve).
 const UPDATE_INTERVAL_TICKS = 1;
+
+// Duração do ease aplicado a CADA atualização de posição durante a
+// reprodução. Um valor maior que o intervalo de atualização (que a 1
+// tick seria só 0.05s) sobrepõe levemente o ease da atualização
+// anterior com a próxima, suavizando qualquer "degrau" residual da
+// transição de um ponto calculado pro outro. 0.1s (2 ticks) é hoje o
+// padrão usado por outros addons de câmera consolidados no mercado.
+const CAMERA_UPDATE_EASE_SECONDS = 0.1;
 
 // Alpha da spline Catmull-Rom centrípeta. 0.5 evita loops e "overshoot"
 // quando as keyframes estão desigualmente espaçadas. Não recomendo mudar.
@@ -176,7 +184,7 @@ function buildArcLengthTable(
 
 // Dado um comprimento de arco alvo, retorna o parâmetro "u" correspondente
 // (interpolado entre as duas amostras mais próximas da tabela).
-function arcLengthToU(table, targetLength) {
+export function arcLengthToU(table, targetLength) {
   const { uValues, cumulative, total } = table;
 
   if (total === 0) return 0;
@@ -201,7 +209,7 @@ function arcLengthToU(table, targetLength) {
 // ============================================================
 // MONTA O CAMINHO (posição + rotação) A PARTIR DAS KEYFRAMES
 // ============================================================
-function buildSmoothPath(keyframes) {
+export function buildSmoothPath(keyframes) {
   const positions = keyframes.map((k) => k.position);
 
   const pitches = keyframes.map((k) => k.rotation.pitch);
@@ -263,8 +271,11 @@ function setCameraTo(player, position, rotation, easeSeconds) {
 function stopInternalTimers(state) {
   if (state.intervalId !== undefined) system.clearRun(state.intervalId);
   if (state.timeoutId !== undefined) system.clearRun(state.timeoutId);
+  if (state.trackIntervalId !== undefined)
+    system.clearRun(state.trackIntervalId);
   state.intervalId = undefined;
   state.timeoutId = undefined;
+  state.trackIntervalId = undefined;
 }
 
 // Reset "bruto": limpa câmera, controlscheme, tag e trava do item.
@@ -278,6 +289,24 @@ function rawReset(player) {
   applyControlScheme(player, "none");
   if (player.getTags().includes(PLAYING_TAG)) player.removeTag(PLAYING_TAG);
   unlockActivatorItem(player);
+}
+
+// Rotação alternativa: em vez do valor gravado/interpolado da spline,
+// calcula o ângulo pra mirar direto nos pés do jogador (posição atual,
+// em tempo real) a partir de onde a câmera está nesse instante. Usa a
+// mesma matemática de look-at já usada nos presets de câmera ao vivo.
+function computeLookAtPlayerRotation(player, cameraPosition) {
+  const feet = player.location;
+
+  const dx = feet.x - cameraPosition.x;
+  const dyDown = cameraPosition.y - feet.y; // positivo = câmera acima dos pés
+  const dz = feet.z - cameraPosition.z;
+  const horizontalDist = Math.sqrt(dx * dx + dz * dz) || 1e-6;
+
+  const yaw = Math.atan2(-dx, dz) * (180 / Math.PI);
+  const pitch = Math.atan2(dyDown, horizontalDist) * (180 / Math.PI);
+
+  return { pitch, yaw };
 }
 
 function startInterval(player, state) {
@@ -294,12 +323,10 @@ function startInterval(player, state) {
       if (state.loop) {
         // Corte seco de volta pro início (sem ease) e continua o mesmo loop.
         state.elapsedTicks = 0;
-        setCameraTo(
-          player,
-          state.keyframes[0].position,
-          state.keyframes[0].rotation,
-          0,
-        );
+        const startRotation = state.lookAtPlayer
+          ? computeLookAtPlayerRotation(player, state.keyframes[0].position)
+          : state.keyframes[0].rotation;
+        setCameraTo(player, state.keyframes[0].position, startRotation, 0);
         return;
       }
 
@@ -313,19 +340,42 @@ function startInterval(player, state) {
       state.positionTable,
       fraction * state.positionTable.total,
     );
-    const rotationU = arcLengthToU(
-      state.rotationTable,
-      fraction * state.rotationTable.total,
-    );
 
     const position = state.positionEval(positionU);
-    const rotation = state.rotationEval(rotationU);
+
+    let rotation;
+    if (state.lookAtPlayer) {
+      rotation = computeLookAtPlayerRotation(player, position);
+    } else {
+      const rotationU = arcLengthToU(
+        state.rotationTable,
+        fraction * state.rotationTable.total,
+      );
+      rotation = state.rotationEval(rotationU);
+    }
 
     setCameraTo(player, position, rotation, state.updateEaseSeconds);
   }, UPDATE_INTERVAL_TICKS);
 }
 
+function startSingleKeyframeTracking(player, state) {
+  state.trackIntervalId = system.runInterval(() => {
+    if (!player.isValid) {
+      cleanupPlaybackOnLeave(player.id);
+      return;
+    }
+    const rotation = computeLookAtPlayerRotation(player, state.position);
+    setCameraTo(player, state.position, rotation, CAMERA_UPDATE_EASE_SECONDS);
+  }, UPDATE_INTERVAL_TICKS);
+}
+
 export function iniciar(player) {
+  if (isInPreset(player)) {
+    Tools.playError(player);
+    player.sendMessage(Tools.t("sys.error.camera_busy"));
+    return;
+  }
+
   const timelineName = getCurrentTimeline(player);
   const timeline = Tools.getDynamicProperty(player, timelineName);
   if (!timeline) return;
@@ -339,19 +389,33 @@ export function iniciar(player) {
   // Primeira keyframe instantânea — é isso que coloca a câmera em modo
   // "free". SÓ a partir daqui o controlscheme pode ser aplicado de fato
   // (ver nota em playOptionsService.applyControlScheme).
-  setCameraTo(player, keyframes[0].position, keyframes[0].rotation, 0);
+  const { loop, controlScheme, lookAtPlayer } = getPlayOptions(player);
 
-  const { loop, controlScheme } = getPlayOptions(player);
+  const initialRotation = lookAtPlayer
+    ? computeLookAtPlayerRotation(player, keyframes[0].position)
+    : keyframes[0].rotation;
+  setCameraTo(player, keyframes[0].position, initialRotation, 0);
+
   applyControlScheme(player, controlScheme);
 
   player.addTag(PLAYING_TAG);
   lockActivatorItem(player);
-  hideKeyframeMarkers(player);
 
   // Apenas uma keyframe: não há caminho pra suavizar, só espera e limpa.
+  // Se "olhar pro jogador" estiver ligado, ainda assim roda um interval
+  // leve só pra ir atualizando a rotação (a posição fica parada).
   if (keyframes.length === 1) {
-    const state = { kind: "single", paused: false };
+    const state = {
+      kind: "single",
+      paused: false,
+      lookAtPlayer,
+      position: keyframes[0].position,
+    };
     activePlaybacks.set(player.id, state);
+
+    if (lookAtPlayer) {
+      startSingleKeyframeTracking(player, state);
+    }
 
     state.timeoutId = system.runTimeout(() => {
       stopAnimation(player);
@@ -371,8 +435,9 @@ export function iniciar(player) {
     positionTable,
     rotationTable,
     loop,
+    lookAtPlayer,
     totalTicks: secondsToTicks(timeline.defaultMaxTime),
-    updateEaseSeconds: UPDATE_INTERVAL_TICKS / TicksPerSecond,
+    updateEaseSeconds: CAMERA_UPDATE_EASE_SECONDS,
     elapsedTicks: 0,
     paused: false,
   };
@@ -414,8 +479,13 @@ export function resumeAnimation(player) {
   state.paused = false;
 
   // Keyframe única: não existe progresso pra retomar, a câmera já está
-  // parada no lugar certo — só sair do estado "pausado" já basta.
-  if (state.kind === "single") return;
+  // parada no lugar certo — só sair do estado "pausado" já basta (a
+  // não ser que "olhar pro jogador" esteja ligado, aí precisa religar
+  // o interval leve de rastreamento que o pause tinha derrubado).
+  if (state.kind === "single") {
+    if (state.lookAtPlayer) startSingleKeyframeTracking(player, state);
+    return;
+  }
 
   startInterval(player, state);
 }
@@ -432,7 +502,6 @@ export function stopAnimation(player) {
   activePlaybacks.delete(player.id);
 
   rawReset(player);
-  restoreKeyframeMarkersIfEnabled(player);
 }
 
 /**

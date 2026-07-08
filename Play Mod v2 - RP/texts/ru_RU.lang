@@ -64,3 +64,49 @@ menu.play_control.button.pause=§2Пауза \n §fПауза камеры
 menu.play_control.button.resume=§2Продолжить \n §fПродолжить
 menu.play_control.button.stop=§cОстановить \n §fОстановить
 item.playmod:play_camera=Play Camera
+
+menu.flycam.confirm.title=§6Режим Flycam
+menu.flycam.confirm.body=§7Использовать свободную камеру (flycam) для размещения этого кадра? Вы сможете свободно долететь до нужной точки.
+menu.flycam.confirm.yes=§2Да, лететь свободно
+menu.flycam.confirm.no=§7Нет, использовать текущую позицию
+menu.flycam.started=§9[Play Mod] §aРежим flycam включён! Долетите до нужной позиции и используйте предмет, чтобы отметить точку. Присядьте, чтобы выйти.
+menu.flycam.ended=§9[Play Mod] §aРежим flycam завершён. §f%s §aточек размещено.
+sys.error.animation_playing=§9[Play Mod] §cЭто нельзя сделать, пока анимация воспроизводится!
+ui.edit.insert.label=§eВставить перед этим? Отметьте и сохраните. \n §jДобавляет новый кадр прямо перед этим
+ui.insert.keyframe.button=§2Вставить кадр\n §fДобавить новый кадр здесь
+
+ui.edit_all.ask_flycam.label=§2Спрашивать про flycam? \n §jЕсли выключено, всегда использует текущую позицию без вопроса
+sys.error.below_world=§9[Play Mod] §cНельзя разместить кадр ниже Y %s!
+menu.flycam.actionbar.hint=§7Подойдите ближе к своему телу, чтобы выйти из flycam
+menu.flycam.actionbar.returning=§eВыход из flycam через §f%sс§e...
+
+menu.main.button.presets=§2Пресеты \n §jЖивые камеры: орбита 360° и фиксированные углы
+menu.presets.title=§6Пресеты камеры
+menu.presets.button.orbit_360=§2Орбита 360° \n §jНепрерывно вращается вокруг вас
+menu.presets.button.north=§2Север \n §jКамера зафиксирована на севере, смотрит на вас
+menu.presets.button.east=§2Восток \n §jКамера зафиксирована на востоке, смотрит на вас
+menu.presets.button.south=§2Юг \n §jКамера зафиксирована на юге, смотрит на вас
+menu.presets.button.west=§2Запад \n §jКамера зафиксирована на западе, смотрит на вас
+ui.preset.height.label=§7Высота
+ui.preset.distance.label=§7Расстояние
+ui.preset.orbit.title=§6Орбита 360°
+ui.preset.orbit.speed.label=§7Скорость вращения
+ui.preset.fixed.title=§6Фиксированная камера
+menu.preset.started=§9[Play Mod] §aПресет камеры включён! Используйте предмет снова, чтобы остановить.
+menu.preset.stopped=§9[Play Mod] §aПресет камеры остановлен.
+sys.error.camera_busy=§9[Play Mod] §cВы уже используете другую функцию камеры прямо сейчас!
+
+menu.presets.button.chase=§2Погоня \n §jВсегда следует позади вас
+menu.presets.button.handheld=§2Ручная камера \n §jСледует позади вас с органичной тряской
+menu.presets.button.pendulum=§2Маятник \n §jКачается из стороны в сторону вместо полного вращения
+menu.presets.button.aerial=§2Вид с воздуха \n §jШирокая высокая орбита, как в установочном плане
+ui.preset.relative.label=§2Относительно игрока? \n §jСледует направлению вашего взгляда, а не сторонам света
+ui.preset.chase.title=§6Камера погони
+ui.preset.handheld.title=§6Ручная камера
+ui.preset.pendulum.title=§6Маятник
+ui.preset.pendulum.sweep.label=§7Амплитуда качания
+ui.preset.aerial.title=§6Вид с воздуха
+
+ui.preset.control_scheme.label=§2Камера относительно движения (WASD)? \n §jДвигаться относительно камеры, пока пресет активен
+
+menu.play_options.button.look_at_player=§2Смотреть на игрока \n §fНацеливается на ваши ноги вместо записанного поворота

@@ -29,7 +29,7 @@ export function listKeyframe_UI(player) {
         buttons.push({
           text:
             keyframe.name === ""
-              ? Tools.t("menu.keyframes.default_name", [index])
+              ? Tools.t("menu.keyframes.default_name", [index + 1])
               : keyframe.name,
           action: () => editKeyframe_UI(player, index),
         });
