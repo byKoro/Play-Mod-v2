@@ -85,12 +85,6 @@ Play Mod v2 - RP/
 ├── ui/server_form.json     → painel de créditos customizado (JSON UI)
 └── texts/                 → localização (espelha a BP)
 ```
-
-## ⚠️ Limitações conhecidas
-
-- O item ativador padrão é `playmod:play_camera` — troque em `scripts/constants.js` se quiser usar outro item.
-- Os marcadores visuais de keyframe usam um modelo de cubo simples sem textura definitiva.
-
 ## 📝 Licença
 
 Todos os direitos reservados a **Koro**. Se pretende reutilizar ou redistribuir partes deste projeto, entre em contato antes.# Play-Mod-v2
