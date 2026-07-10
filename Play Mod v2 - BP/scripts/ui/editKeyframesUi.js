@@ -1,4 +1,4 @@
-import { system } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { Tools } from "../utils/tools";
 import { listKeyframe_UI } from "./listKeyframeUi";
@@ -67,6 +67,10 @@ export function editKeyframe_UI(player, keyframeIndex) {
       {
         type: "toggle",
         label: Tools.t("ui.edit.delete.label"),
+      },
+      {
+        type: "toggle",
+        label: Tools.t("ui.edit.teleport.label"),
       },
       {
         type: "textField",
@@ -143,8 +147,24 @@ export function editKeyframe_UI(player, keyframeIndex) {
       if (delKeyframe(player, keyframeIndex, value[3])) {
         return listKeyframe_UI(player);
       }
-      setKeyframePosition(player, keyframeIndex, value[4]);
-      setKeyframeRotation(player, keyframeIndex, value[5]);
+
+      // Teleporta o jogador pra posição/rotação exatas desse keyframe
+      // — útil pra visualizar onde ele está antes de decidir o que
+      // fazer. Mutuamente exclusivo com regravar/inserir/deletar (a
+      // mesma checagem de "só uma opção por vez" já cobre isso).
+      if (value[4]) {
+        const dimension = world.getDimension(keyframe.dimension);
+        player.teleport(keyframe.position, {
+          dimension,
+          rotation: { x: keyframe.rotation.pitch, y: keyframe.rotation.yaw },
+        });
+        Tools.playSuccess(player);
+        player.sendMessage(Tools.t("sys.msg.success.teleported"));
+        return editKeyframe_UI(player, keyframeIndex);
+      }
+
+      setKeyframePosition(player, keyframeIndex, value[5]);
+      setKeyframeRotation(player, keyframeIndex, value[6]);
 
       Tools.playSuccess(player);
       player.sendMessage(Tools.t("sys.msg.success.keyframe_updated"));

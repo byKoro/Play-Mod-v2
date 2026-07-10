@@ -50,7 +50,7 @@ export function main_UI(player) {
       },
       {
         text: Tools.t("menu.main.button.presets"),
-        icon: "textures/ui/play_mod/preset_360.png",
+        icon: "textures/ui/play_mod/presets.png",
         action: () => presetsUi(player),
       },
     ];

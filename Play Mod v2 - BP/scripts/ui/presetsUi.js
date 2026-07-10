@@ -13,7 +13,6 @@ import {
   getPresetDistance,
   getPresetSpeed,
   getPresetSweep,
-  getPresetRelative,
   isControlSchemeRelative,
   savePresetSettings,
 } from "../services/presetCameraService.js";
@@ -37,22 +36,22 @@ export function presetsUi(player) {
       },
       {
         text: Tools.t("menu.presets.button.north"),
-        icon: "textures/ui/play_mod/preset_direction.png",
+        icon: "textures/ui/play_mod/preset_direction_n.png",
         action: () => fixedSettingsUi(player, "north"),
       },
       {
         text: Tools.t("menu.presets.button.east"),
-        icon: "textures/ui/play_mod/preset_direction.png",
+        icon: "textures/ui/play_mod/preset_direction_l.png",
         action: () => fixedSettingsUi(player, "east"),
       },
       {
         text: Tools.t("menu.presets.button.south"),
-        icon: "textures/ui/play_mod/preset_direction.png",
+        icon: "textures/ui/play_mod/preset_direction_s.png",
         action: () => fixedSettingsUi(player, "south"),
       },
       {
         text: Tools.t("menu.presets.button.west"),
-        icon: "textures/ui/play_mod/preset_direction.png",
+        icon: "textures/ui/play_mod/preset_direction_w.png",
         action: () => fixedSettingsUi(player, "west"),
       },
       {
@@ -115,25 +114,15 @@ function orbitSettingsUi(player) {
     form.slider(Tools.t("ui.preset.orbit.speed.label"), SPEED_MIN, SPEED_MAX, {
       defaultValue: getPresetSpeed(player),
     });
-    form.toggle(Tools.t("ui.preset.relative.label"), {
-      defaultValue: getPresetRelative(player),
-    });
     addControlSchemeToggle(form, player);
 
     try {
       const response = await form.show(player);
       if (response.canceled) return presetsUi(player);
 
-      const [height, distance, speed, relative, controlScheme] =
-        response.formValues;
-      savePresetSettings(player, { height, distance, speed, relative });
-      startOrbitPreset(player, {
-        height,
-        distance,
-        speed,
-        relative,
-        controlScheme,
-      });
+      const [height, distance, speed, controlScheme] = response.formValues;
+      savePresetSettings(player, { height, distance, speed });
+      startOrbitPreset(player, { height, distance, speed, controlScheme });
     } catch (error) {
       console.error(error);
     }
@@ -155,31 +144,21 @@ function fixedSettingsUi(player, direction) {
         defaultValue: getPresetDistance(player),
       },
     );
-    form.toggle(Tools.t("ui.preset.relative.label"), {
-      defaultValue: getPresetRelative(player),
-    });
     addControlSchemeToggle(form, player);
 
     try {
       const response = await form.show(player);
       if (response.canceled) return presetsUi(player);
 
-      const [height, distance, relative, controlScheme] = response.formValues;
-      savePresetSettings(player, { height, distance, relative });
-      startFixedPreset(player, direction, {
-        height,
-        distance,
-        relative,
-        controlScheme,
-      });
+      const [height, distance, controlScheme] = response.formValues;
+      savePresetSettings(player, { height, distance });
+      startFixedPreset(player, direction, { height, distance, controlScheme });
     } catch (error) {
       console.error(error);
     }
   });
 }
 
-// Perseguição e câmera de mão sempre seguem por trás do jogador (não
-// faz sentido ter a opção "relativo" nelas — já são sempre relativas).
 function chaseSettingsUi(player) {
   system.run(async () => {
     const form = new ModalFormData();
@@ -256,24 +235,20 @@ function pendulumSettingsUi(player) {
         defaultValue: getPresetSweep(player),
       },
     );
-    form.toggle(Tools.t("ui.preset.relative.label"), {
-      defaultValue: getPresetRelative(player),
-    });
     addControlSchemeToggle(form, player);
 
     try {
       const response = await form.show(player);
       if (response.canceled) return presetsUi(player);
 
-      const [height, distance, speed, sweep, relative, controlScheme] =
+      const [height, distance, speed, sweep, controlScheme] =
         response.formValues;
-      savePresetSettings(player, { height, distance, speed, sweep, relative });
+      savePresetSettings(player, { height, distance, speed, sweep });
       startPendulumPreset(player, {
         height,
         distance,
         speed,
         sweep,
-        relative,
         controlScheme,
       });
     } catch (error) {
@@ -300,25 +275,15 @@ function aerialSettingsUi(player) {
     form.slider(Tools.t("ui.preset.orbit.speed.label"), 1, 5, {
       defaultValue: Math.min(getPresetSpeed(player), 5),
     });
-    form.toggle(Tools.t("ui.preset.relative.label"), {
-      defaultValue: getPresetRelative(player),
-    });
     addControlSchemeToggle(form, player);
 
     try {
       const response = await form.show(player);
       if (response.canceled) return presetsUi(player);
 
-      const [height, distance, speed, relative, controlScheme] =
-        response.formValues;
-      savePresetSettings(player, { height, distance, speed, relative });
-      startAerialPreset(player, {
-        height,
-        distance,
-        speed,
-        relative,
-        controlScheme,
-      });
+      const [height, distance, speed, controlScheme] = response.formValues;
+      savePresetSettings(player, { height, distance, speed });
+      startAerialPreset(player, { height, distance, speed, controlScheme });
     } catch (error) {
       console.error(error);
     }

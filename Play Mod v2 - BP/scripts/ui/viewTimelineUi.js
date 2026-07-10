@@ -13,8 +13,14 @@ export function viewTimelineUi(player, select) {
   const form = new ActionFormData();
 
   form.title(Tools.t("ui.view.title", [select]));
-  form.button(Tools.t("ui.view.button.delete"));
-  form.button(Tools.t("ui.view.button.load"));
+  form.button(
+    Tools.t("ui.view.button.delete"),
+    "textures/ui/play_mod/delete_timeline.png",
+  );
+  form.button(
+    Tools.t("ui.view.button.load"),
+    "textures/ui/play_mod/load_timeline.png",
+  );
   form.show(player).then((response) => {
     if (response.canceled) return listTimelinesUi(player);
 

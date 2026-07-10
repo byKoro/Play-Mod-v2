@@ -3,28 +3,28 @@ pack.description=Sistema de Timeline e Keyframes para câmeras
 
 menu.main.title=§6§0§0§0§6Timeline: %s
 menu.keyframes.title.active=§6Timeline: %s
-menu.keyframes.title.none=§eSem Timeline Ativa \n §jSelecione outra
+menu.keyframes.title.none=§eSem Timeline Ativa \n §fSelecione outra
 menu.timelines.title=§6Timelines Salvas
 ui.view.title=§6Timeline: %s
-ui.save.title=§6Exportar Timeline \n §jSalvar arquivo
-ui.edit.title=§6Editar Keyframe %s \n §jEditar frame
-ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §jEdição geral
+ui.save.title=§6Exportar Timeline \n §fSalvar arquivo
+ui.edit.title=§6Editar Keyframe %s \n §fEditar frame
+ui.edit_all.title=§6Alterar Todos os Keyframes: %s \n §fEdição geral
 
-ui.save.field.label=§7Salvar nome da timeline \n §jDefina nome
-ui.save.field.placeholder=§7Escreva o nome... \n §jSem especiais
-ui.edit.rename.label=§7Nomeie o keyframe \n §jMude nome
-ui.edit.pos.label=§7Ajuste fino de posição \n §jPosição XYZ
-ui.edit.rot.label=§7Ajuste fino de rotação \n §jRotação câmera
-ui.edit_all.transition.label=§7Tempo total em segundos \n §jDuração total
-ui.edit_all.markers.label=§2Mostrar marcadores? \n §jExibe marcadores
-menu.keyframes.default_name=§eKeyframe %s \n §jNome padrão
+ui.save.field.label=§7Salvar nome da timeline \n §fDefina nome
+ui.save.field.placeholder=§7Escreva o nome... \n §fSem especiais
+ui.edit.rename.label=§7Nomeie o keyframe \n §fMude nome
+ui.edit.pos.label=§7Ajuste fino de posição \n §fPosição XYZ
+ui.edit.rot.label=§7Ajuste fino de rotação \n §fRotação câmera
+ui.edit_all.transition.label=§7Tempo total em segundos \n §fDuração total
+ui.edit_all.markers.label=§2Mostrar marcadores? \n §fExibe marcadores
+menu.keyframes.default_name=§eKeyframe %s \n §fNome padrão
 
 menu.main.button.set_keyframe=§2Definir Keyframe \n §fCriar frame
 menu.main.button.manage_keyframes=§2Gerenciar Keyframes \n §fEditar frames
 menu.main.button.manage_timelines=§2Gerenciar Timelines \n §fAbrir lista
 menu.main.button.start=§2Iniciar \n §fReproduzir
 
-menu.play_options.title=§6Opções de Reprodução \n §jConfigurar reprodução
+menu.play_options.title=§6Opções de Reprodução \n §fConfigurar reprodução
 menu.play_options.button.loop=§2Repetir (Loop) \n §fLoop infinito
 menu.play_options.button.camera_relative=§2Câmera Relativa \n §fModo relativo
 menu.play_options.button.start=§2Iniciar \n §fReproduzir
@@ -35,9 +35,9 @@ ui.edit.button.submit=§2Salvar
 
 menu.main.button.delete_last=§cDeletar Último Frame \n §fRemover último
 ui.view.button.delete=§cDeletar \n §fExcluir timeline
-ui.edit.redo.label=§cRegravar? Marque e salve. \n §jAtualizar posição
-ui.edit.delete.label=§cDeletar? Marque e salve. \n §jRemover frame
-ui.edit_all.reset.label=§4Deletar todos? \n §jLimpar tudo
+ui.edit.redo.label=§cRegravar? Marque e salve. \n §fAtualizar posição
+ui.edit.delete.label=§cDeletar? Marque e salve. \n §fRemover frame
+ui.edit_all.reset.label=§4Deletar todos? \n §fLimpar tudo
 
 sys.msg.success.generic=§9[Play Mod] §aFeito com sucesso!
 sys.msg.success.keyframe_set=§9[Play Mod] §aKeyframe definido com sucesso!
@@ -59,10 +59,10 @@ sys.error.no_timelines=§9[Play Mod] §cVocê ainda não tem nenhuma timeline sa
 ui.redo.keyframe.button=§2Reposicionar keyframe\n §fMover frame
 ui.cancel.button=§cCancelar edição \n §fSair edição
 
-menu.play_control.title=§6Controle de Reprodução \n §jControlar animação
+menu.play_control.title=§6Controle de Reprodução \n §fControlar animação
 menu.play_control.button.pause=§2Pausar \n §fPausar câmera
-menu.play_control.button.resume=§2Continuar \n §fRetomar animação
-menu.play_control.button.stop=§cParar \n §fEncerrar animação
+menu.play_control.button.resume=§2Continuar \n §fVolta a tocar
+menu.play_control.button.stop=§cParar \n §fEncerrar tudo
 item.playmod:play_camera=Play Camera
 
 menu.flycam.confirm.title=§6Modo Flycam
@@ -72,21 +72,21 @@ menu.flycam.confirm.no=§7Não, usar minha posição atual
 menu.flycam.started=§9[Play Mod] §aModo flycam ativado! Voe até a posição desejada e use o item pra marcar um ponto. Agache pra sair.
 menu.flycam.ended=§9[Play Mod] §aModo flycam encerrado. §f%s §aponto(s) marcado(s).
 sys.error.animation_playing=§9[Play Mod] §cVocê não pode fazer isso com uma animação em andamento!
-ui.edit.insert.label=§eInserir antes deste? Marque e salve. \n §jAdiciona um novo keyframe logo antes deste
+ui.edit.insert.label=§eInserir antes deste? Marque e salve. \n §fInsere antes deste
 ui.insert.keyframe.button=§2Inserir keyframe\n §fAdicionar novo frame aqui
 
-ui.edit_all.ask_flycam.label=§2Perguntar sobre flycam? \n §jSe desligado, sempre usa a posição atual sem perguntar
+ui.edit_all.ask_flycam.label=§2Perguntar sobre flycam? \n §fPergunta antes de voar
 sys.error.below_world=§9[Play Mod] §cNão é possível colocar um keyframe abaixo de Y %s!
 menu.flycam.actionbar.hint=§7Chegue perto do seu corpo pra sair do flycam
 menu.flycam.actionbar.returning=§eSaindo do flycam em §f%ss§e...
 
-menu.main.button.presets=§2Presets \n §jCâmeras ao vivo: órbita 360° e ângulos fixos
+menu.main.button.presets=§2Presets \n §fCâmeras prontas
 menu.presets.title=§6Presets de Câmera
-menu.presets.button.orbit_360=§2Órbita 360° \n §jGira continuamente ao redor de você
-menu.presets.button.north=§2Norte \n §jCâmera fixa ao norte, olhando pra você
-menu.presets.button.east=§2Leste \n §jCâmera fixa ao leste, olhando pra você
-menu.presets.button.south=§2Sul \n §jCâmera fixa ao sul, olhando pra você
-menu.presets.button.west=§2Oeste \n §jCâmera fixa ao oeste, olhando pra você
+menu.presets.button.orbit_360=§2Órbita 360° \n §fGira ao seu redor
+menu.presets.button.north=§2Norte \n §fFixa ao norte
+menu.presets.button.east=§2Leste \n §fFixa ao leste
+menu.presets.button.south=§2Sul \n §fFixa ao sul
+menu.presets.button.west=§2Oeste \n §fFixa ao oeste
 ui.preset.height.label=§7Altura
 ui.preset.distance.label=§7Distância
 ui.preset.orbit.title=§6Órbita 360°
@@ -96,17 +96,22 @@ menu.preset.started=§9[Play Mod] §aPreset de câmera ativado! Use o item de no
 menu.preset.stopped=§9[Play Mod] §aPreset de câmera encerrado.
 sys.error.camera_busy=§9[Play Mod] §cVocê já está usando outra função de câmera agora!
 
-menu.presets.button.chase=§2Perseguição \n §jSegue sempre atrás de você
-menu.presets.button.handheld=§2Câmera de Mão \n §jSegue atrás de você com tremor orgânico
-menu.presets.button.pendulum=§2Pêndulo \n §jBalança de um lado pro outro, sem girar 360°
-menu.presets.button.aerial=§2Vista Aérea \n §jÓrbita ampla e alta, tipo plano de estabelecimento
-ui.preset.relative.label=§2Relativo ao jogador? \n §jSegue a direção que você olha, em vez da bússola do mundo
+menu.presets.button.chase=§2Perseguição \n §fSempre atrás
+menu.presets.button.handheld=§2Câmera de Mão \n §fCom tremor leve
+menu.presets.button.pendulum=§2Pêndulo \n §fBalança sem girar
+menu.presets.button.aerial=§2Vista Aérea \n §fVista panorâmica
 ui.preset.chase.title=§6Câmera de Perseguição
 ui.preset.handheld.title=§6Câmera de Mão
 ui.preset.pendulum.title=§6Pêndulo
 ui.preset.pendulum.sweep.label=§7Amplitude do balanço
 ui.preset.aerial.title=§6Vista Aérea
 
-ui.preset.control_scheme.label=§2Câmera relativa (WASD)? \n §jMove-se em relação à câmera enquanto o preset estiver ativo
+ui.preset.control_scheme.label=§2Câmera relativa (WASD)? \n §fMovimento relativo
 
-menu.play_options.button.look_at_player=§2Olhar pro Jogador \n §fMira nos seus pés em vez da rotação gravada
+menu.play_options.button.look_at_player=§2Olhar pro Jogador \n §fMira nos seus pés
+
+menu.play_options.button.hide_during_playback=§2Sumir na Câmera \n §fFica invisível
+
+menu.play_control.button.view=§2Visualização \n §fAjustes ao vivo
+ui.edit.teleport.label=§eIr até aqui? Marque e salve. \n §jVai até a posição dele
+sys.msg.success.teleported=§9[Play Mod] §aTeleportado pro keyframe!

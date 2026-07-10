@@ -1,4 +1,4 @@
-import { system, EasingType, world } from "@minecraft/server";
+import { system, EasingType } from "@minecraft/server";
 import { isPlaying } from "./playCamera.js";
 import { isInFlycam } from "./flycamService.js";
 import { getPlayOptions, applyControlScheme } from "./playOptionsService.js";
@@ -12,11 +12,11 @@ const presetStates = new Map();
 const LOCATION_SMOOTHING = 0.18;
 const ROTATION_SMOOTHING = 0.15;
 
-// Suavização do ângulo-base nos presets "relativos". Bem mais lenta
-// que as de cima de propósito: usar a rotação da CABEÇA (mouse look)
-// direto faria a câmera reagir a cada micro-olhada; suavizando bem
-// devagar, ela só acompanha a direção GERAL que o jogador está
-// virando, que é o que "relativo à sua posição" realmente quer dizer.
+// Suavização do ângulo-base dos presets sempre-relativos (perseguição
+// e câmera de mão). Bem mais lenta de propósito: usar a rotação da
+// cabeça (mouse look) direto faria a câmera reagir a cada
+// micro-olhada; suavizando bem devagar, ela só acompanha a direção
+// GERAL que o jogador está virando.
 const BASE_ANGLE_SMOOTHING = 0.05;
 
 const DEFAULT_HEIGHT = 4;
@@ -26,10 +26,16 @@ const DEFAULT_SWEEP = 60; // amplitude do pêndulo, graus pra cada lado
 
 const FIXED_ANGLES = { north: 180, east: 270, south: 0, west: 90 };
 
-// Ângulo relativo (em relação à direção que o jogador está olhando)
-// usado pelos presets que sempre seguem por trás — 180° = atrás.
+// Ângulos relativos (em relação à direção que o jogador está olhando)
+// usados pelos presets que sempre seguem grudados nele:
+// - Perseguição: câmera atrás dele, olhando pras costas dele (180°).
+// - Câmera de mão: câmera na frente dele, olhando pro rosto (0°).
 const CHASE_RELATIVE_ANGLE = 180;
+const HANDHELD_RELATIVE_ANGLE = 0;
 
+// Únicos modos que têm ângulo relativo à direção do jogador — todos os
+// outros (órbita, fixo, pêndulo, aérea) giram sempre em torno da
+// bússola fixa do mundo, sem depender de pra onde ele está olhando.
 const ALWAYS_RELATIVE_MODES = new Set(["chase", "handheld"]);
 
 /** true se o jogador tem um preset de câmera ao vivo ativo agora. */
@@ -51,19 +57,13 @@ export function getPresetSpeed(player) {
 export function getPresetSweep(player) {
   return Tools.getDynamicProperty(player, "presetSweep") ?? DEFAULT_SWEEP;
 }
-export function getPresetRelative(player) {
-  return Tools.getDynamicProperty(player, "presetRelative") ?? false;
-}
 
 /** true se a preferência global de "câmera relativa" (WASD) está ligada. */
 export function isControlSchemeRelative(player) {
   return getPlayOptions(player).controlScheme === "camera_relative";
 }
 
-export function savePresetSettings(
-  player,
-  { height, distance, speed, sweep, relative },
-) {
+export function savePresetSettings(player, { height, distance, speed, sweep }) {
   if (height !== undefined)
     Tools.setDynamicProperty(player, "presetHeight", height);
   if (distance !== undefined)
@@ -72,8 +72,6 @@ export function savePresetSettings(
     Tools.setDynamicProperty(player, "presetSpeed", speed);
   if (sweep !== undefined)
     Tools.setDynamicProperty(player, "presetSweep", sweep);
-  if (relative !== undefined)
-    Tools.setDynamicProperty(player, "presetRelative", relative);
 }
 
 function canStartPreset(player) {
@@ -92,11 +90,11 @@ function lerpAngleShortest(from, to, t) {
   return from + diff * t;
 }
 
-// Atualiza (suavemente) e devolve o ângulo-base desse tick. Presets
-// não-relativos não têm base nenhuma (0 = bússola fixa do mundo).
+// Atualiza (suavemente) e devolve o ângulo-base desse tick. Só os
+// modos sempre-relativos (perseguição/mão) têm base; todos os outros
+// giram em torno da bússola fixa do mundo (0 = sem deslocamento).
 function updateBaseAngle(player, state) {
-  const isRelative = state.relative || ALWAYS_RELATIVE_MODES.has(state.mode);
-  if (!isRelative) return 0;
+  if (!ALWAYS_RELATIVE_MODES.has(state.mode)) return 0;
 
   const target = player.getRotation().y;
   state.smoothBaseAngle =
@@ -109,8 +107,8 @@ function updateBaseAngle(player, state) {
 
 // Cada modo calcula o ÂNGULO da câmera nesse tick, em cima da base já
 // suavizada — é a única diferença real entre os presets "simples"
-// (órbita, fixo, perseguição, pêndulo) — todos usam o mesmo motor de
-// suavização/look-at embaixo.
+// (órbita, fixo, perseguição, câmera de mão, pêndulo) — todos usam o
+// mesmo motor de suavização/look-at embaixo.
 function computeAngle(player, state) {
   const base = updateBaseAngle(player, state);
 
@@ -118,19 +116,21 @@ function computeAngle(player, state) {
     case "orbit":
     case "aerial":
       state.angle = (state.angle + state.speed) % 360;
-      return base + state.angle;
+      return state.angle;
 
     case "fixed":
-      return base + state.angle;
+      return state.angle;
 
     case "chase":
-    case "handheld":
       return base + CHASE_RELATIVE_ANGLE;
+
+    case "handheld":
+      return base + HANDHELD_RELATIVE_ANGLE;
 
     case "pendulum": {
       state.phase = (state.phase ?? 0) + state.speed;
       const oscillation = Math.sin((state.phase * Math.PI) / 180) * state.sweep;
-      return base + oscillation;
+      return oscillation;
     }
 
     default:
@@ -173,13 +173,6 @@ function startTracking(player, state) {
   state.controlSchemeApplied = false;
 
   state.intervalId = system.runInterval(() => {
-    // Sempre relê o estado do mapa. Se "pararam" enquanto isso (ver
-    // stopPreset), o sinal fica em stopRequested — tratado logo
-    // abaixo, ANTES de qualquer setCamera novo nesse tick. É isso que
-    // garante que o clear() é sempre a ÚLTIMA coisa que mexe na
-    // câmera do jogador, sem nenhuma chance de um setCamera correr
-    // por fora depois (a causa da câmera ficar "presa" fora do
-    // jogador antes dessa correção).
     const current = presetStates.get(player.id);
     if (!current) return;
 
@@ -221,7 +214,9 @@ function startTracking(player, state) {
       z: current.smoothLocation.z + offset.z,
     };
 
-    // Mira um pouco acima dos pés do jogador (altura do peito).
+    // Mira um pouco acima dos pés do jogador (altura do peito) — é
+    // isso que garante ele sempre centralizado na tela, em qualquer
+    // ângulo que a câmera esteja.
     const lookAt = {
       x: current.smoothLocation.x,
       y: current.smoothLocation.y + 1,
@@ -303,32 +298,23 @@ function finishStop(player, state) {
 }
 
 /** Órbita 360° contínua ao redor do jogador, girando `speed` graus/tick. */
-export function startOrbitPreset(
-  player,
-  { height, distance, speed, relative, controlScheme },
-) {
+export function startOrbitPreset(player, { height, distance, speed, controlScheme }) {
   startTracking(player, {
     mode: "orbit",
     height,
     distance,
     speed,
-    relative,
     angle: 0,
     useControlScheme: !!controlScheme,
   });
 }
 
 /** Câmera "ao vivo" num ângulo fixo (norte/leste/sul/oeste) relativo ao jogador. */
-export function startFixedPreset(
-  player,
-  direction,
-  { height, distance, relative, controlScheme },
-) {
+export function startFixedPreset(player, direction, { height, distance, controlScheme }) {
   startTracking(player, {
     mode: "fixed",
     height,
     distance,
-    relative,
     angle: FIXED_ANGLES[direction] ?? 0,
     useControlScheme: !!controlScheme,
   });
@@ -340,22 +326,17 @@ export function startChasePreset(player, { height, distance, controlScheme }) {
     mode: "chase",
     height,
     distance,
-    relative: true,
     angle: 0,
     useControlScheme: !!controlScheme,
   });
 }
 
-/** Câmera de mão: igual perseguição, com tremor orgânico por cima. */
-export function startHandheldPreset(
-  player,
-  { height, distance, controlScheme },
-) {
+/** Câmera de mão: na frente do jogador, olhando pro rosto dele, com tremor orgânico. */
+export function startHandheldPreset(player, { height, distance, controlScheme }) {
   startTracking(player, {
     mode: "handheld",
     height,
     distance,
-    relative: true,
     angle: 0,
     useControlScheme: !!controlScheme,
   });
@@ -364,7 +345,7 @@ export function startHandheldPreset(
 /** Pêndulo: balança de um lado pro outro num arco, em vez de girar 360°. */
 export function startPendulumPreset(
   player,
-  { height, distance, speed, sweep, relative, controlScheme },
+  { height, distance, speed, sweep, controlScheme },
 ) {
   startTracking(player, {
     mode: "pendulum",
@@ -372,23 +353,18 @@ export function startPendulumPreset(
     distance,
     speed,
     sweep,
-    relative,
     angle: 0,
     useControlScheme: !!controlScheme,
   });
 }
 
 /** Aérea: órbita ampla e alta, tipo plano de estabelecimento cinematográfico. */
-export function startAerialPreset(
-  player,
-  { height, distance, speed, relative, controlScheme },
-) {
+export function startAerialPreset(player, { height, distance, speed, controlScheme }) {
   startTracking(player, {
     mode: "aerial",
     height,
     distance,
     speed,
-    relative,
     angle: 0,
     useControlScheme: !!controlScheme,
   });

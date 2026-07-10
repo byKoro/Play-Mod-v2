@@ -44,5 +44,10 @@
   "textures/ui/play_mod/preset_chase",
   "textures/ui/play_mod/preset_handheld",
   "textures/ui/play_mod/preset_pendulum",
-  "textures/ui/play_mod/preset_aerial"
+  "textures/ui/play_mod/preset_aerial",
+  "textures/ui/play_mod/hide_on",
+  "textures/ui/play_mod/hide_off",
+  "textures/ui/play_mod/delete_timeline",
+  "textures/ui/play_mod/load_timeline",
+  "textures/ui/play_mod/view_options"
 ]

@@ -1,8 +1,4 @@
-import {
-  system,
-  EasingType,
-  InputPermissionCategory,
-} from "@minecraft/server";
+import { system, EasingType, InputPermissionCategory } from "@minecraft/server";
 import { isPlaying } from "./playCamera.js";
 import { placeFlycamKeyframe } from "./keyframeService.js";
 import { isInPreset } from "./presetCameraService.js";
@@ -49,7 +45,9 @@ function getPerpendicularBasis(dir) {
   // Se a direção for quase igual ao "up" do mundo (voando reto pra
   // cima/baixo), o cross product com worldUp degenera — usa outro
   // eixo de referência nesse caso.
-  const alignment = Math.abs(dir.x * worldUp.x + dir.y * worldUp.y + dir.z * worldUp.z);
+  const alignment = Math.abs(
+    dir.x * worldUp.x + dir.y * worldUp.y + dir.z * worldUp.z,
+  );
   const reference = alignment > 0.99 ? { x: 1, y: 0, z: 0 } : worldUp;
 
   let right = {
@@ -58,7 +56,11 @@ function getPerpendicularBasis(dir) {
     z: dir.x * reference.y - dir.y * reference.x,
   };
   const rightLen = Math.sqrt(right.x ** 2 + right.y ** 2 + right.z ** 2) || 1;
-  right = { x: right.x / rightLen, y: right.y / rightLen, z: right.z / rightLen };
+  right = {
+    x: right.x / rightLen,
+    y: right.y / rightLen,
+    z: right.z / rightLen,
+  };
 
   const up = {
     x: right.y * dir.z - right.z * dir.y,
@@ -179,79 +181,95 @@ export function startFlycam(player, mode) {
     mode,
     placedCount: 0,
     returnCountdown: null,
+    stopRequested: false,
     intervalId: undefined,
   };
 
   state.intervalId = system.runInterval(() => {
+    // Sempre relê o estado do mapa. Se exitFlycam foi chamado de FORA
+    // do loop (ex: placeFlycamPoint ao inserir/substituir, ou a morte
+    // do jogador em main.js), o pedido fica em stopRequested — tratado
+    // logo abaixo, ANTES de qualquer setCamera nesse tick. É isso que
+    // garante que o clear() é sempre a ÚLTIMA coisa que mexe na
+    // câmera, sem chance de um setCamera correr por fora depois (a
+    // causa da câmera ficar "presa" no lugar em vez de voltar pro
+    // jogador ao inserir/substituir um keyframe pelo flycam).
+    const current = flycamStates.get(player.id);
+    if (!current) return;
+
     if (!player.isValid) {
       cleanupFlycamOnLeave(player.id);
       return;
     }
 
-    // Agachar sai do modo flycam.
-    if (player.isSneaking) {
-      exitFlycam(player);
+    if (current.stopRequested) {
+      finishFlycamExit(player, current);
       return;
     }
 
-    state.rotation = player.getRotation();
-    const { forward, right } = computeForwardRight(state.rotation);
+    // Agachar sai do modo flycam. Já estamos dentro do próprio tick,
+    // antes do setCamera — seguro chamar a limpeza direto.
+    if (player.isSneaking) {
+      finishFlycamExit(player, current);
+      return;
+    }
+
+    current.rotation = player.getRotation();
+    const { forward, right } = computeForwardRight(current.rotation);
     const moveVector = player.inputInfo.getMovementVector();
 
     if (moveVector.x !== 0 || moveVector.y !== 0) {
       const intended = {
         x:
-          state.location.x +
+          current.location.x +
           (forward.x * moveVector.y + right.x * moveVector.x) * MOVE_SPEED,
-        y: state.location.y + forward.y * moveVector.y * MOVE_SPEED,
+        y: current.location.y + forward.y * moveVector.y * MOVE_SPEED,
         z:
-          state.location.z +
+          current.location.z +
           (forward.z * moveVector.y + right.z * moveVector.x) * MOVE_SPEED,
       };
 
-      state.location = avoidCollision(player.dimension, state.location, intended);
+      current.location = avoidCollision(
+        player.dimension,
+        current.location,
+        intended,
+      );
     }
 
     // Saída por proximidade: perto do próprio corpo por 5s seguidos
     // sai do flycam sozinho. Fica sempre parado até isso (mesmo já
     // começando perto, já que o voo nasce na posição do jogador) —
     // sair de perto a qualquer momento cancela a contagem.
-    //
-    // IMPORTANTE: essa checagem roda ANTES do setCamera de baixo. Se
-    // for sair nesse tick, saímos direto (camera.clear() dentro de
-    // exitFlycam) sem antes mandar mais um setCamera("minecraft:free")
-    // — as duas chamadas no mesmo tick faziam a câmera "brigar" e
-    // ficar presa em modo livre mesmo depois do clear.
-    const dx = state.location.x - player.location.x;
-    const dy = state.location.y - player.location.y;
-    const dz = state.location.z - player.location.z;
+    const dx = current.location.x - player.location.x;
+    const dy = current.location.y - player.location.y;
+    const dz = current.location.z - player.location.z;
     const distanceToBody = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
     if (distanceToBody <= RETURN_DISTANCE) {
-      state.returnCountdown =
-        state.returnCountdown === null
+      current.returnCountdown =
+        current.returnCountdown === null
           ? RETURN_COUNTDOWN_TICKS
-          : state.returnCountdown - 1;
+          : current.returnCountdown - 1;
 
-      if (state.returnCountdown <= 0) {
-        exitFlycam(player);
+      if (current.returnCountdown <= 0) {
+        finishFlycamExit(player, current);
         return;
       }
 
-      const secondsLeft = Math.ceil(state.returnCountdown / 20);
+      const secondsLeft = Math.ceil(current.returnCountdown / 20);
       player.onScreenDisplay.setActionBar(
         Tools.t("menu.flycam.actionbar.returning", [secondsLeft]),
       );
     } else {
-      state.returnCountdown = null;
+      current.returnCountdown = null;
       player.onScreenDisplay.setActionBar(
         Tools.t("menu.flycam.actionbar.hint"),
       );
     }
 
     player.camera.setCamera("minecraft:free", {
-      location: state.location,
-      rotation: state.rotation,
+      location: current.location,
+      rotation: current.rotation,
       easeOptions: {
         easeTime: CAMERA_EASE_SECONDS,
         easeType: EasingType.Linear,
@@ -297,13 +315,15 @@ export function placeFlycamPoint(player) {
   }
 }
 
-/** Sai do flycam normalmente (jogador válido, restaura tudo). */
-export function exitFlycam(player) {
-  const state = flycamStates.get(player.id);
-  if (!state) return;
-
-  system.clearRun(state.intervalId);
+/**
+ * Limpeza de verdade (clearRun + delete + camera.clear() + restaura
+ * movimento) — só deve ser chamada de DENTRO do próprio interval do
+ * flycam (garantindo que nunca roda no mesmo tick que um setCamera
+ * mandado por fora). Todo o resto deve chamar exitFlycam (abaixo).
+ */
+function finishFlycamExit(player, state) {
   flycamStates.delete(player.id);
+  system.clearRun(state.intervalId);
 
   player.camera.clear();
   player.inputPermissions.setPermissionCategory(
@@ -312,6 +332,17 @@ export function exitFlycam(player) {
   );
 
   player.sendMessage(Tools.t("menu.flycam.ended", [state.placedCount]));
+}
+
+/**
+ * Pede pra sair do flycam. Seguro de chamar de QUALQUER lugar (dentro
+ * ou fora do loop) — só sinaliza; é o próprio loop que faz a limpeza
+ * de verdade (finishFlycamExit, acima) no início do seu próximo tick.
+ */
+export function exitFlycam(player) {
+  const state = flycamStates.get(player.id);
+  if (!state) return;
+  state.stopRequested = true;
 }
 
 /**

@@ -327,6 +327,17 @@ function startInterval(player, state) {
           ? computeLookAtPlayerRotation(player, state.keyframes[0].position)
           : state.keyframes[0].rotation;
         setCameraTo(player, state.keyframes[0].position, startRotation, 0);
+
+        // O efeito de invisibilidade tem duração fixa (um ciclo + uma
+        // folga) — sem renovar aqui, ele expirava sozinho depois do
+        // primeiro ciclo mesmo com o loop continuando indefinidamente.
+        if (state.hideDuringPlayback && player.isValid) {
+          player.addEffect("invisibility", state.totalTicks + 40, {
+            amplifier: 0,
+            showParticles: false,
+          });
+        }
+
         return;
       }
 
@@ -389,7 +400,8 @@ export function iniciar(player) {
   // Primeira keyframe instantânea — é isso que coloca a câmera em modo
   // "free". SÓ a partir daqui o controlscheme pode ser aplicado de fato
   // (ver nota em playOptionsService.applyControlScheme).
-  const { loop, controlScheme, lookAtPlayer } = getPlayOptions(player);
+  const { loop, controlScheme, lookAtPlayer, hideDuringPlayback } =
+    getPlayOptions(player);
 
   const initialRotation = lookAtPlayer
     ? computeLookAtPlayerRotation(player, keyframes[0].position)
@@ -401,6 +413,17 @@ export function iniciar(player) {
   player.addTag(PLAYING_TAG);
   lockActivatorItem(player);
 
+  if (hideDuringPlayback) {
+    // Duração generosa (a animação inteira + uma folga) — é removido
+    // explicitamente em stopAnimation de qualquer forma, então a
+    // duração aqui só precisa ser longa o bastante pra nunca expirar
+    // sozinha antes da animação realmente acabar.
+    player.addEffect("invisibility", secondsToTicks(timeline.defaultMaxTime) + 40, {
+      amplifier: 0,
+      showParticles: false,
+    });
+  }
+
   // Apenas uma keyframe: não há caminho pra suavizar, só espera e limpa.
   // Se "olhar pro jogador" estiver ligado, ainda assim roda um interval
   // leve só pra ir atualizando a rotação (a posição fica parada).
@@ -409,6 +432,7 @@ export function iniciar(player) {
       kind: "single",
       paused: false,
       lookAtPlayer,
+      hideDuringPlayback,
       position: keyframes[0].position,
     };
     activePlaybacks.set(player.id, state);
@@ -436,6 +460,7 @@ export function iniciar(player) {
     rotationTable,
     loop,
     lookAtPlayer,
+    hideDuringPlayback,
     totalTicks: secondsToTicks(timeline.defaultMaxTime),
     updateEaseSeconds: CAMERA_UPDATE_EASE_SECONDS,
     elapsedTicks: 0,
@@ -454,6 +479,57 @@ export function isPlaying(player) {
 /** true se a animação do jogador está pausada no momento. */
 export function isPaused(player) {
   return activePlaybacks.get(player.id)?.paused ?? false;
+}
+
+/**
+ * Aplica na reprodução JÁ EM ANDAMENTO qualquer mudança feita no menu
+ * de opções (loop, controlscheme, olhar pro jogador, sumir na câmera)
+ * — sem isso, as opções só valeriam a partir da PRÓXIMA vez que a
+ * animação for iniciada, já que normalmente elas são lidas uma única
+ * vez em iniciar(). Chamado pelo playOptionsUi sempre que algo muda,
+ * enquanto o menu estiver sendo usado durante a reprodução (não faz
+ * nada se não houver reprodução ativa).
+ */
+export function updateLiveOptions(player) {
+  const state = activePlaybacks.get(player.id);
+  if (!state) return;
+
+  const { loop, controlScheme, lookAtPlayer, hideDuringPlayback } =
+    getPlayOptions(player);
+
+  applyControlScheme(player, controlScheme);
+
+  if (state.kind === "path") {
+    state.loop = loop;
+    state.lookAtPlayer = lookAtPlayer;
+  }
+
+  if (state.kind === "single") {
+    if (lookAtPlayer && !state.lookAtPlayer) {
+      state.lookAtPlayer = true;
+      startSingleKeyframeTracking(player, state);
+    } else if (!lookAtPlayer && state.lookAtPlayer) {
+      state.lookAtPlayer = false;
+      if (state.trackIntervalId !== undefined) {
+        system.clearRun(state.trackIntervalId);
+        state.trackIntervalId = undefined;
+      }
+    }
+  }
+
+  if (hideDuringPlayback && !state.hideDuringPlayback) {
+    const remainingTicks =
+      state.kind === "path" ? state.totalTicks - state.elapsedTicks : 200;
+    if (player.isValid) {
+      player.addEffect("invisibility", remainingTicks + 40, {
+        amplifier: 0,
+        showParticles: false,
+      });
+    }
+  } else if (!hideDuringPlayback && state.hideDuringPlayback) {
+    if (player.isValid) player.removeEffect("invisibility");
+  }
+  state.hideDuringPlayback = hideDuringPlayback;
 }
 
 /**
@@ -500,6 +576,10 @@ export function stopAnimation(player) {
   const state = activePlaybacks.get(player.id);
   if (state) stopInternalTimers(state);
   activePlaybacks.delete(player.id);
+
+  if (state?.hideDuringPlayback && player.isValid) {
+    player.removeEffect("invisibility");
+  }
 
   rawReset(player);
 }

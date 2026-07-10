@@ -14,6 +14,7 @@ function defaultPlayOptions() {
     loop: false,
     controlScheme: "none", // "none" | "camera_relative"
     lookAtPlayer: false,
+    hideDuringPlayback: false,
   };
 }
 
@@ -42,6 +43,16 @@ export function toggleLoop(player) {
 export function toggleLookAtPlayer(player) {
   const options = getPlayOptions(player);
   options.lookAtPlayer = !options.lookAtPlayer;
+  savePlayOptions(player, options);
+  return options;
+}
+
+// Alterna se o jogador fica invisível (efeito de invisibilidade)
+// durante a reprodução — some quando a animação começa, volta ao
+// normal quando ela para (ver playCamera.iniciar/stopAnimation).
+export function toggleHideDuringPlayback(player) {
+  const options = getPlayOptions(player);
+  options.hideDuringPlayback = !options.hideDuringPlayback;
   savePlayOptions(player, options);
   return options;
 }
